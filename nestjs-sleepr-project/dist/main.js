@@ -2,6 +2,166 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./libs/common/src/config/config.module.ts":
+/*!*************************************************!*\
+  !*** ./libs/common/src/config/config.module.ts ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ConfigModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const joi = __webpack_require__(/*! joi */ "joi");
+let ConfigModule = class ConfigModule {
+};
+exports.ConfigModule = ConfigModule;
+exports.ConfigModule = ConfigModule = __decorate([
+    (0, common_1.Module)({
+        imports: [
+            config_1.ConfigModule.forRoot({
+                validationSchema: joi.object({
+                    MONGODB_URI: joi.string().required(),
+                    NODE_ENV: joi.string().required(),
+                }),
+            }),
+        ],
+        providers: [config_1.ConfigService],
+        exports: [config_1.ConfigService],
+    })
+], ConfigModule);
+
+
+/***/ }),
+
+/***/ "./libs/common/src/config/index.ts":
+/*!*****************************************!*\
+  !*** ./libs/common/src/config/index.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./config.module */ "./libs/common/src/config/config.module.ts"), exports);
+
+
+/***/ }),
+
+/***/ "./libs/common/src/index.ts":
+/*!**********************************!*\
+  !*** ./libs/common/src/index.ts ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./mongodb */ "./libs/common/src/mongodb/index.ts"), exports);
+__exportStar(__webpack_require__(/*! ./config */ "./libs/common/src/config/index.ts"), exports);
+
+
+/***/ }),
+
+/***/ "./libs/common/src/mongodb/index.ts":
+/*!******************************************!*\
+  !*** ./libs/common/src/mongodb/index.ts ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./mongodb.module */ "./libs/common/src/mongodb/mongodb.module.ts"), exports);
+
+
+/***/ }),
+
+/***/ "./libs/common/src/mongodb/mongodb.module.ts":
+/*!***************************************************!*\
+  !*** ./libs/common/src/mongodb/mongodb.module.ts ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MongodbModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const mongoose_1 = __webpack_require__(/*! @nestjs/mongoose */ "@nestjs/mongoose");
+const config_2 = __webpack_require__(/*! ../config */ "./libs/common/src/config/index.ts");
+let MongodbModule = class MongodbModule {
+};
+exports.MongodbModule = MongodbModule;
+exports.MongodbModule = MongodbModule = __decorate([
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forRootAsync({
+                imports: [config_2.ConfigModule],
+                useFactory: (configService) => ({
+                    uri: configService.get('MONGODB_URI'),
+                }),
+                inject: [config_1.ConfigService],
+            }),
+        ],
+    })
+], MongodbModule);
+
+
+/***/ }),
+
 /***/ "./src/app.controller.ts":
 /*!*******************************!*\
   !*** ./src/app.controller.ts ***!
@@ -64,12 +224,13 @@ exports.AppModule = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const app_controller_1 = __webpack_require__(/*! ./app.controller */ "./src/app.controller.ts");
 const app_service_1 = __webpack_require__(/*! ./app.service */ "./src/app.service.ts");
+const common_2 = __webpack_require__(/*! @app/common */ "./libs/common/src/index.ts");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [common_2.MongodbModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })
@@ -117,6 +278,16 @@ module.exports = require("@nestjs/common");
 
 /***/ }),
 
+/***/ "@nestjs/config":
+/*!*********************************!*\
+  !*** external "@nestjs/config" ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/config");
+
+/***/ }),
+
 /***/ "@nestjs/core":
 /*!*******************************!*\
   !*** external "@nestjs/core" ***!
@@ -124,6 +295,26 @@ module.exports = require("@nestjs/common");
 /***/ ((module) => {
 
 module.exports = require("@nestjs/core");
+
+/***/ }),
+
+/***/ "@nestjs/mongoose":
+/*!***********************************!*\
+  !*** external "@nestjs/mongoose" ***!
+  \***********************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/mongoose");
+
+/***/ }),
+
+/***/ "joi":
+/*!**********************!*\
+  !*** external "joi" ***!
+  \**********************/
+/***/ ((module) => {
+
+module.exports = require("joi");
 
 /***/ })
 
