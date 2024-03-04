@@ -55,7 +55,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
    * @param {UpdateQuery<TDocument>} updateQuery - The update query to apply to the document
    * @return {Promise<TDocument>} The updated document
    */
-  async asyncFindOneAndUpdate(
+  async findOneAndUpdate(
     filterQuery: FilterQuery<TDocument>,
     updateQuery: UpdateQuery<TDocument>,
   ): Promise<TDocument> {
