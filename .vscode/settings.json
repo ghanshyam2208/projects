@@ -1,9 +1,9 @@
 {
-  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnType": false, // required
   "editor.formatOnPaste": false, // optional
   "editor.formatOnSaveMode": "file", // required to format on save
-  "files.autoSave": "onFocusChange", // optional but recommended
+  "files.autoSave": "off", // optional but recommended
   "vs-code-prettier-eslint.prettierLast": true,
   "files.exclude": {
     "**/.git": true,
@@ -18,8 +18,5 @@
     "comments": "",
     "textMateRules": []
   },
-  "cSpell.words": [
-    "nestjs",
-    "sleepr"
-  ] // set as "true" to run 'prettier' last not first
+  "cSpell.words": ["nestjs", "sleepr"] // set as "true" to run 'prettier' last not first
 }
