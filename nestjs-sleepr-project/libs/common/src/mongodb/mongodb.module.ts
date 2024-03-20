@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ModelDefinition, MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '../config';
 
 //   imports: [MongooseModule.forRoot('mongodb://localhost/sleepr')], // without implementing the config service module
@@ -15,4 +15,9 @@ import { ConfigModule } from '../config';
     }),
   ],
 })
-export class MongodbModule {}
+export class MongodbModule {
+  static forFeature(models: ModelDefinition[]) {
+    return MongooseModule.forFeature(models);
+  }
+  constructor() {}
+}
