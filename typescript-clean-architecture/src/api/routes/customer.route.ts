@@ -12,7 +12,10 @@ class CustomerRoutes {
   }
 
   private setRoutes() {
-    this.router.get(``, (_req: Request, res: Response) => {
+    this.router.get(`/`, (_req: Request, res: Response) => {
+      return res.status(200).json({ h1: this.customerService.getAll() });
+    });
+    this.router.get(`/:id`, (_req: Request, res: Response) => {
       return res.status(200).json({ h1: this.customerService.get() });
     });
   }
