@@ -1,6 +1,6 @@
-import { AppRoutes } from './api/routes';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import bodyParser from 'body-parser';
+import { AppRoutes } from './api/routes';
 
 export class AppBootstrap {
   public app: Application;
