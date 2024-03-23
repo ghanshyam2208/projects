@@ -1,17 +1,17 @@
 import express, { Router, Request, Response } from 'express';
 
 class CustomerRoutes {
-  public customerRouter: Router;
+  public router: Router;
   constructor() {
-    this.customerRouter = express.Router();
-    this.setCustomerRoutes();
+    this.router = express.Router();
+    this.setRoutes();
   }
 
-  private setCustomerRoutes() {
-    this.customerRouter.get(``, (_req: Request, res: Response) => {
+  private setRoutes() {
+    this.router.get(``, (_req: Request, res: Response) => {
       return res.status(200).json({ h1: 'h1' });
     });
   }
 }
 
-export default new CustomerRoutes().customerRouter;
+export default new CustomerRoutes().router;
