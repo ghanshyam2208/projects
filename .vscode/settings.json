@@ -18,5 +18,5 @@
     "comments": "",
     "textMateRules": []
   },
-  "cSpell.words": ["nestjs", "sleepr"] // set as "true" to run 'prettier' last not first
+  "cSpell.words": ["nestjs", "sleepr", "logrocket"] // set as "true" to run 'prettier' last not first
 }
