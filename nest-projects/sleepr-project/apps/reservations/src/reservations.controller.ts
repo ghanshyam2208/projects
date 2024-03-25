@@ -11,6 +11,7 @@ import { ReservationsService } from './reservations.service';
 import { ReservationsDocument } from './model/reservations.model';
 import { CreateReservationDto } from './dto/CreateReservationDto';
 import { UpdateReservationDto } from './dto/UpdateReservationDto';
+import { ReservationValidationPipe } from './reservation.validation';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -23,7 +24,8 @@ export class ReservationsController {
 
   @Post('')
   createReservation(
-    @Body() createReservationDto: CreateReservationDto,
+    @Body(new ReservationValidationPipe())
+    createReservationDto: CreateReservationDto,
   ): Promise<ReservationsDocument> {
     return this.reservationsService.createReservation(createReservationDto);
   }
