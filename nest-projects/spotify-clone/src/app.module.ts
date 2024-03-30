@@ -7,6 +7,8 @@ import { SongsModule } from './songs/songs.module';
 import { LoggerMiddleware } from './common/middlewares/logger/logger.middleware';
 import { SongsController } from './songs/songs.controller';
 import { SongsModel } from './songs/songs.model';
+import { UsersModel } from './users/users.entity';
+import { ArtistsModel } from './artists/artists.model';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { SongsModel } from './songs/songs.model';
       port: 5432,
       username: 'postgres',
       password: 'postgres',
-      entities: [SongsModel],
+      entities: [SongsModel, UsersModel, ArtistsModel],
       synchronize: true,
     }),
     SongsModule,
