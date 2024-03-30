@@ -3,7 +3,7 @@ import { BadRequestException, PipeTransform } from '@nestjs/common';
 
 export class CreateSongPayload {
   title: string;
-  artists: string[];
+  artists: number[];
   releasedDate: Date;
   duration: Date;
   lyrics: string;
@@ -30,7 +30,7 @@ const JoiDuration = Joi.extend((joi) => ({
 const durationSchema = JoiDuration.duration().required();
 export const CreateSongPayloadSchema = Joi.object({
   title: Joi.string().required(),
-  artists: Joi.array().items(Joi.string()).required(),
+  artists: Joi.array().items(Joi.number()).required(),
   releasedDate: Joi.date().required(),
   duration: durationSchema,
   lyrics: Joi.string().optional(),

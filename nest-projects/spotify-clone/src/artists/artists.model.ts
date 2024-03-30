@@ -1,7 +1,14 @@
+import { SongsModel } from 'src/songs/songs.model';
 import { UsersModel } from 'src/users/users.model';
-import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('Artists')
 export class ArtistsModel {
   @PrimaryGeneratedColumn()
   id: number;
@@ -9,4 +16,7 @@ export class ArtistsModel {
   @OneToOne(() => UsersModel)
   @JoinColumn()
   user: UsersModel;
+
+  @ManyToMany(() => SongsModel, (song) => song.artists)
+  songs: SongsModel[];
 }

@@ -5,6 +5,8 @@ import { MySqlConnectionType } from 'src/common/constant/mysql.connection';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { SongsModel } from './songs.model';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ArtistsModel } from 'src/artists/artists.model';
+import { string } from 'joi';
 
 @Injectable()
 export class SongsService {
@@ -12,17 +14,24 @@ export class SongsService {
     @Inject('MYSQL_CONNECTION') mySqlConnection: MySqlConnectionType,
     @InjectRepository(SongsModel)
     private songsRepository: Repository<SongsModel>,
+    @InjectRepository(ArtistsModel)
+    private artistRepository: Repository<ArtistsModel>,
   ) {
-    console.log(mySqlConnection);
+    console.log(mySqlConnection); // this dummy example to show case useValue providers
   }
 
-  createSong(createSongPayload: CreateSongPayload): Promise<SongsModel> {
+  async createSong(createSongPayload: CreateSongPayload): Promise<SongsModel> {
     const newSong = new SongsModel();
     newSong.title = createSongPayload.title;
-    newSong.artists = createSongPayload.artists;
     newSong.releasedDate = createSongPayload.releasedDate;
     newSong.duration = createSongPayload.duration;
     newSong.lyrics = createSongPayload.lyrics;
+
+    const artists = await this.artistRepository.findByIds(
+      createSongPayload.artists,
+    );
+    console.log('artists', artists);
+    newSong.artists = artists;
 
     return this.songsRepository.save(newSong);
   }
@@ -43,11 +52,27 @@ export class SongsService {
     });
   }
 
-  updateOne(
+  async updateOne(
     id: number,
     updateSongPayload: CreateSongPayload,
   ): Promise<UpdateResult> {
-    return this.songsRepository.update(id, updateSongPayload);
+    const artistsFound = await this.artistRepository.findByIds(
+      updateSongPayload.artists,
+    );
+    console.log(artistsFound);
+    const artistsToUpdate = [];
+    const { artists, ...rest } = updateSongPayload;
+    if (artistsFound) {
+      artistsFound.map((artists) => {
+        artistsToUpdate.push({
+          id: artists.id,
+        });
+      });
+    }
+    return this.songsRepository.update(id, {
+      ...rest,
+      artists: artistsToUpdate,
+    });
   }
 
   deleteOne(id: number): Promise<DeleteResult> {
