@@ -1,10 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateSongPayload } from './songs.validations';
+import { MySqlConnectionType } from 'src/common/constant/mysql.connection';
 
 @Injectable()
 export class SongsService {
   private readonly songs = {};
+
+  constructor(
+    @Inject('MYSQL_CONNECTION') mySqlConnection: MySqlConnectionType,
+  ) {
+    console.log(mySqlConnection);
+  }
 
   createSong(createSongPayload: CreateSongPayload) {
     const id = uuidv4();
