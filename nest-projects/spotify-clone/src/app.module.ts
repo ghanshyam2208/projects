@@ -1,4 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SongsModule } from './songs/songs.module';
@@ -6,11 +8,25 @@ import { LoggerMiddleware } from './common/middlewares/logger/logger.middleware'
 import { SongsController } from './songs/songs.controller';
 
 @Module({
-  imports: [SongsModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      database: 'spotify-clone',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      entities: [],
+    }),
+    SongsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
+  constructor(private dataSource: DataSource) {
+    console.log('db name', this.dataSource.driver.database);
+  }
   configure(consumer: MiddlewareConsumer) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // consumer.apply(LoggerMiddleware).forRoutes('songs');
