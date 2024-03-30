@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -29,20 +30,20 @@ export class SongsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.songsService.findOne(Number(id));
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.songsService.findOne(id);
   }
 
   @Put(':id')
   updateOne(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body(new CreateSongValidationPipe()) updateSongPayload: CreateSongPayload,
   ) {
     return this.songsService.updateOne(id, updateSongPayload);
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: string) {
+  deleteOne(@Param('id', ParseIntPipe) id: number) {
     return this.songsService.deleteOne(id);
   }
 }
