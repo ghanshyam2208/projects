@@ -30,17 +30,15 @@ export class SongsService {
   }
 
   findAll() {
-    return Object.keys(this.songs).map((key) => {
-      return this.songs[key];
-    });
+    return this.songsRepository.find({});
   }
 
-  findOne(id: string) {
-    const song = this.songs[id];
-    if (!song) {
-      throw new NotFoundException(`no song found with id ${id}`);
-    }
-    return song;
+  findOne(id: number) {
+    return this.songsRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
   updateOne(id: string, updateSongPayload: CreateSongPayload) {
