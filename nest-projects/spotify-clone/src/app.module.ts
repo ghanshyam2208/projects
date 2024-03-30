@@ -7,7 +7,7 @@ import { SongsModule } from './songs/songs.module';
 import { LoggerMiddleware } from './common/middlewares/logger/logger.middleware';
 import { SongsController } from './songs/songs.controller';
 import { SongsModel } from './songs/songs.model';
-import { UsersModel } from './users/users.entity';
+import { UsersModel } from './users/users.model';
 import { ArtistsModel } from './artists/artists.model';
 
 @Module({
