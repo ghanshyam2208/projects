@@ -3,9 +3,10 @@ import { BadRequestException, PipeTransform } from '@nestjs/common';
 
 export class CreateSongPayload {
   title: string;
-  artists: string;
+  artists: string[];
   releasedDate: Date;
   duration: Date;
+  lyrics: string;
 }
 // Custom Joi extension for duration validation
 const JoiDuration = Joi.extend((joi) => ({
@@ -32,6 +33,7 @@ export const CreateSongPayloadSchema = Joi.object({
   artists: Joi.array().items(Joi.string()).required(),
   releasedDate: Joi.date().required(),
   duration: durationSchema,
+  lyrics: Joi.string().optional(),
 }).options({
   abortEarly: false,
 });

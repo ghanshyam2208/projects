@@ -1,7 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+
 import { CreateSongPayload } from './songs.validations';
 import { MySqlConnectionType } from 'src/common/constant/mysql.connection';
+import { Repository } from 'typeorm';
+import { SongsModel } from './songs.model';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class SongsService {
@@ -9,18 +12,21 @@ export class SongsService {
 
   constructor(
     @Inject('MYSQL_CONNECTION') mySqlConnection: MySqlConnectionType,
+    @InjectRepository(SongsModel)
+    private songsRepository: Repository<SongsModel>,
   ) {
     console.log(mySqlConnection);
   }
 
-  createSong(createSongPayload: CreateSongPayload) {
-    const id = uuidv4();
-    const song = {
-      ...createSongPayload,
-      id,
-    };
-    this.songs[id] = song;
-    return song;
+  createSong(createSongPayload: CreateSongPayload): Promise<SongsModel> {
+    const newSong = new SongsModel();
+    newSong.title = createSongPayload.title;
+    newSong.artists = createSongPayload.artists;
+    newSong.releasedDate = createSongPayload.releasedDate;
+    newSong.duration = createSongPayload.duration;
+    newSong.lyrics = createSongPayload.lyrics;
+
+    return this.songsRepository.save(newSong);
   }
 
   findAll() {
