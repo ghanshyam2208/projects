@@ -27,8 +27,12 @@ export class SongsService {
     return this.songsRepository.save(newSong);
   }
 
-  findAll(): Promise<SongsModel[]> {
-    return this.songsRepository.find({});
+  async findAll(page: number = 1, limit: number = 10): Promise<SongsModel[]> {
+    const [songs] = await this.songsRepository.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+    return songs;
   }
 
   findOne(id: number): Promise<SongsModel> {

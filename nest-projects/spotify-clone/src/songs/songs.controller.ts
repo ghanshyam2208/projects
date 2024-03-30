@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   CreateSongPayload,
@@ -24,9 +26,12 @@ export class SongsController {
     return this.songsService.createSong(createPostPayload);
   }
 
-  @Get()
-  findAll() {
-    return this.songsService.findAll();
+  @Get('')
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(2), ParseIntPipe) limit: number,
+  ) {
+    return this.songsService.findAll(page, limit);
   }
 
   @Get(':id')
