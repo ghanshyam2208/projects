@@ -29,7 +29,7 @@ const JoiDuration = Joi.extend((joi) => ({
 const durationSchema = JoiDuration.duration().required();
 export const CreateSongPayloadSchema = Joi.object({
   title: Joi.string().required(),
-  artists: Joi.array().required(),
+  artists: Joi.array().items(Joi.string()).required(),
   releasedDate: Joi.date().required(),
   duration: durationSchema,
 }).options({
