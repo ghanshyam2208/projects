@@ -9,6 +9,7 @@ import { SongsController } from './songs/songs.controller';
 import { SongsModel } from './songs/songs.model';
 import { UsersModel } from './users/users.model';
 import { ArtistsModel } from './artists/artists.model';
+import { PlaylistsModel } from './playlists/playlists.model';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ArtistsModel } from './artists/artists.model';
       port: 5432,
       username: 'postgres',
       password: 'postgres',
-      entities: [SongsModel, UsersModel, ArtistsModel],
+      entities: [SongsModel, UsersModel, ArtistsModel, PlaylistsModel],
       synchronize: true,
     }),
     SongsModule,
