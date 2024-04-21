@@ -17,7 +17,7 @@ model Users {
   id        Int         @id @default(autoincrement())
   firstName String
   lastName  String
-  email     String
+  email     String      @unique
   password  String
   playlists Playlists[]
   artists   Artists?

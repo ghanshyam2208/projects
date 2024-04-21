@@ -1,6 +1,7 @@
 import * as Joi from 'joi';
 import { BadRequestException, PipeTransform } from '@nestjs/common';
 import { Users } from '@prisma/client';
+const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,40}$/;
 
 export class CreateUserPayload {
   firstName: string;
@@ -12,8 +13,14 @@ export class CreateUserPayload {
 export const CreateUserPayloadSchema = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  email: Joi.string().required(),
-  password: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string()
+    .pattern(new RegExp(passwordRegex))
+    .required()
+    .messages({
+      'string.pattern.base': 'Password must meet the specified requirements',
+      'string.empty': 'Password is required',
+    }),
 }).options({
   abortEarly: false,
 });
