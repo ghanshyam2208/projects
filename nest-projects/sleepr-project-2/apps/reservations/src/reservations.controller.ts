@@ -8,7 +8,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
-import { CreateReservationPayload } from './reservations.validations';
+import {
+  CreateReservationPayload,
+  ReservationValidationPipe,
+} from './reservations.validations';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -16,7 +19,8 @@ export class ReservationsController {
 
   @Post()
   createReservation(
-    @Body() createReservationPayload: CreateReservationPayload,
+    @Body(new ReservationValidationPipe())
+    createReservationPayload: CreateReservationPayload,
   ) {
     return this.reservationsService.createReservation(createReservationPayload);
   }
@@ -34,7 +38,8 @@ export class ReservationsController {
   @Patch(':id')
   updateReservationById(
     @Param('id') id: string,
-    @Body() createReservationPayload: CreateReservationPayload,
+    @Body(new ReservationValidationPipe())
+    createReservationPayload: CreateReservationPayload,
   ) {
     return this.reservationsService.updateReservation(
       id,
