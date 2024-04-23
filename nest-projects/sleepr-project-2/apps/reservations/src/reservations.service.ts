@@ -1,8 +1,40 @@
 import { Injectable } from '@nestjs/common';
+import { CreateReservationPayload } from './reservations.validations';
+import { ReservationRepository } from './reservations.repository';
 
 @Injectable()
 export class ReservationsService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(private readonly reservationRepository: ReservationRepository) {}
+
+  createReservation(createReservationPayload: CreateReservationPayload) {
+    return this.reservationRepository.create({
+      ...createReservationPayload,
+      timestamp: new Date(),
+      userId: '123',
+    });
+  }
+
+  getReservations() {
+    return this.reservationRepository.find({});
+  }
+
+  getReservationById(_id: string) {
+    return this.reservationRepository.findOne({ _id });
+  }
+
+  updateReservation(
+    _id: string,
+    createReservationPayload: CreateReservationPayload,
+  ) {
+    return this.reservationRepository.findOneAndUpdate(
+      { _id },
+      {
+        $set: createReservationPayload,
+      },
+    );
+  }
+
+  deleteReservationById(_id: string) {
+    return this.reservationRepository.findOneAndDelete({ _id });
   }
 }
