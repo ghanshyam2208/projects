@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 @Injectable()
 export class CryptoHelper {
   algorithm = 'aes-256-cbc';
-  key = Buffer.from('mySecretKey12345678901234567890', 'utf8');
+  key = Buffer.from(process.env.CRYPTO_SECRET, 'utf8');
   iv = crypto.randomBytes(16);
   encrypt(text: string) {
     const cipher = crypto.createCipher('aes-256-cbc', this.key);
