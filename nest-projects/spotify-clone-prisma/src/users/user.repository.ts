@@ -11,4 +11,12 @@ export class UsersRepository {
       data: createUserPayload,
     });
   }
+
+  findUserByEmail(email: string) {
+    return this.prisma.users.findFirst({
+      where: {
+        email,
+      },
+    });
+  }
 }

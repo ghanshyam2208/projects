@@ -10,6 +10,11 @@ export class CreateUserPayload {
   password: string;
 }
 
+export class LoginPayload {
+  email: string;
+  password: string;
+}
+
 export const CreateUserPayloadSchema = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
@@ -25,9 +30,37 @@ export const CreateUserPayloadSchema = Joi.object({
   abortEarly: false,
 });
 
+export const LoginPayloadSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string()
+    .pattern(new RegExp(passwordRegex))
+    .required()
+    .messages({
+      'string.pattern.base': 'Password must meet the specified requirements',
+      'string.empty': 'Password is required',
+    }),
+}).options({
+  abortEarly: false,
+});
+
 export class CreateUserValidationPipe implements PipeTransform {
   public transform(value: CreateUserPayload): CreateUserPayload {
     const result = CreateUserPayloadSchema.validate(value);
+    if (result.error) {
+      const errorMessages = result.error.details
+        .map((d) => {
+          return d.message.replace(/"/g, "'"); // remove / from string, replace them with '
+        })
+        .join();
+      throw new BadRequestException(errorMessages);
+    }
+    return value;
+  }
+}
+
+export class LoginValidationPipe implements PipeTransform {
+  public transform(value: LoginPayload): LoginPayload {
+    const result = LoginPayloadSchema.validate(value);
     if (result.error) {
       const errorMessages = result.error.details
         .map((d) => {
