@@ -30,13 +30,15 @@ model Songs {
   duration     DateTime
   lyrics       String?
   artists      ArtistsSongs[]
+  playlists    Playlists[]
 }
 
 model Playlists {
-  id      Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   name    String
-  owner   Users  @relation(fields: [ownerId], references: [id])
+  owner   Users   @relation(fields: [ownerId], references: [id])
   ownerId Int
+  songs   Songs[]
 }
 
 model Artists {
