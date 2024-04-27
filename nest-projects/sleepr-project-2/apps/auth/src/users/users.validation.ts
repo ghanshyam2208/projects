@@ -1,5 +1,6 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
 import * as Joi from 'joi';
+const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,40}$/;
 
 export class CreateUserPayload {
   email: string;
@@ -10,11 +11,7 @@ export const CreateUserPayloadSchema = Joi.object({
   email: Joi.string().required().email(),
   password: Joi.string()
     .required()
-    .pattern(
-      new RegExp(
-        '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
-      ),
-    )
+    .pattern(new RegExp(passwordRegex))
     .message('"password" must be a valid email'),
 }).options({
   abortEarly: false,
