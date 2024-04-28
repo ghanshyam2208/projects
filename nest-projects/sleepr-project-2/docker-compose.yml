@@ -12,8 +12,8 @@ services:
     ports:
       - '3000:3000'
       - '9231:9231'
-    # volumes:
-    #   - .:/usr/src/app
+    volumes:
+      - .:/usr/src/app
 
   auth:
     depends_on:
@@ -28,5 +28,7 @@ services:
     ports:
       - '3001:3001'
       - '9232:9232'
+    volumes:
+      - .:/usr/src/app
   sleepr-mongo:
     image: mongo
