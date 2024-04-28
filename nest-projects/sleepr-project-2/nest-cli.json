@@ -36,6 +36,6 @@
       }
     }
   },
-  "monorepo": true,
+  "monorepo": false,
   "root": "apps/reservations"
 }
