@@ -20,7 +20,7 @@
       "request": "attach",
       "name": "Auth",
       "address": "localhost",
-      "port": 9232,
+      "port": 9229,
       "sourceMaps": true,
       "restart": true,
       "localRoot": "${workspaceFolder}",

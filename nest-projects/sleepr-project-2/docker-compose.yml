@@ -27,8 +27,10 @@ services:
       - ./apps/auth/.env
     ports:
       - '3001:3001'
-      - '9232:9232'
+      - '9229:9229'
     volumes:
       - .:/usr/src/app
   sleepr-mongo:
     image: mongo
+    ports:
+      - '27017:27017'
