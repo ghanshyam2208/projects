@@ -9,6 +9,8 @@ export class ReservationsService {
   createReservation(createReservationPayload: CreateReservationPayload) {
     return this.reservationRepository.create({
       ...createReservationPayload,
+      timestamp: new Date(),
+      userId: '123',
     });
   }
 }
