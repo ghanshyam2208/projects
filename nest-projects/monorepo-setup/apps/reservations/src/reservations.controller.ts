@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
+import {
+  CreateReservationPayload,
+  ReservationValidationPipe,
+} from './reservations.validations';
 
-@Controller()
+@Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
-  @Get()
-  getHello(): string {
-    return this.reservationsService.getHello();
+  @Post()
+  createReservation(
+    @Body(new ReservationValidationPipe())
+    createReservationPayload: CreateReservationPayload,
+  ) {
+    return this.reservationsService.createReservation(createReservationPayload);
   }
 }
