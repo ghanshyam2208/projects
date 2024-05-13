@@ -13,4 +13,28 @@ export class ReservationsService {
       userId: '123',
     });
   }
+
+  getReservations() {
+    return this.reservationRepository.find({});
+  }
+
+  getReservationById(_id: string) {
+    return this.reservationRepository.findOne({ _id });
+  }
+
+  updateReservation(
+    _id: string,
+    createReservationPayload: CreateReservationPayload,
+  ) {
+    return this.reservationRepository.findOneAndUpdate(
+      { _id },
+      {
+        $set: createReservationPayload,
+      },
+    );
+  }
+
+  deleteReservationById(_id: string) {
+    return this.reservationRepository.findOneAndDelete({ _id });
+  }
 }
