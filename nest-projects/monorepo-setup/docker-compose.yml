@@ -1,0 +1,21 @@
+services:
+  reservations:
+    depends_on:
+      - sleepr-mongo
+    build:
+      context: .
+      dockerfile: ./apps/reservations/Dockerfile
+      target: development
+    command: pnpm run start:debug reservations
+    env_file:
+      - ./apps/reservations/.env
+    ports:
+      - '3000:3000'
+      - '9231:9231'
+    volumes:
+      - .:/usr/src/app
+
+  sleepr-mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
