@@ -13,25 +13,30 @@ export class CustomConfigService {
   loadEnv() {
     // const options = { folder: './config' };
 
-    const filePath = `${process.env.NODE_ENV || 'development'}.env`;
-    const envFile = path.resolve(__dirname, '../../', filePath);
+    // env file path
+    const filePath = `${process.env.NODE_ENV || ''}.env`;
 
+    // full path to .env file
+    const envFile = path.resolve(__dirname, '../../', filePath);
     // console.log('__dirname', __dirname);
     // console.log('options.folder', options.folder);
     // console.log('filePath', filePath);
     // console.log('envFile', envFile);
     // console.log(dotenv.parse(fs.readFileSync(envFile)));
 
+    // parse env file to env obj
     this.envConfig = dotenv.parse(fs.readFileSync(envFile));
+    // console.log('this.envConfig', this.envConfig);
 
+    // check validation error
     const { error } = envSchema.validate(this.envConfig, {
       abortEarly: false,
     });
 
+    // exit if validation error
     if (error) {
       throw new InternalServerErrorException(error, envMsgs.missingKey);
     }
-    // console.log('this.envConfig', this.envConfig);
     return this.envConfig;
   }
 
