@@ -1,0 +1,14 @@
+services:
+  auth-ms:
+    build:
+      context: .
+      dockerfile: ./auth.dockerfile
+      target: development
+    command: pnpm
+    env_file:
+      - ./services/auth-ms/.env
+    ports:
+      - "3001:3001"
+      - "9231:9231"
+    volumes:
+      - .:/usr/src/app
