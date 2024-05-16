@@ -1,0 +1,19 @@
+{
+  "name": "@gnbaviskar/common-module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "prepublish": "npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@types/node": "^20.3.1",
+    "rimraf": "^5.0.7",
+    "rxjs": "^7.8.1",
+    "typescript": "^5.1.3"
+  }
+}
