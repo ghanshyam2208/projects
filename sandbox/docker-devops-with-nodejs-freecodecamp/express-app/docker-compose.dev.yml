@@ -6,3 +6,18 @@ services:
     environment:
       - NODE_ENV=development
     command: npm run dev
+
+  my-node-app-mongo:
+    image: mongo:3.6
+    container_name: my-node-app-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    restart: "no"
+    volumes:
+      - mongodb:/data/db
+
+volumes:
+  mongodb:
