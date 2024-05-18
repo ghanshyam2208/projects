@@ -1,27 +1,31 @@
-// const express = require("express");
-import express from "express";
-import mongoose, { mongo } from "mongoose";
+const express = require("express");
+const mongoose = require("mongoose");
+const {
+  MONGO_USERNAME,
+  MONGO_PASSWORD,
+  MONGO_HOST,
+  MONGO_PORT,
+  APP_PORT,
+} = require("./config/config");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = APP_PORT || 3000;
+const MONGO_URL = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/?authSource=admin`;
 
-mongoose
-  .connect("mongodb://root:root@my-node-app-mongo:27017/?authSource=admin")
-  .then(() => console.log("Connected to mongodb"))
-  .catch((e) => console.log("error while connecting to mongodb", e));
+const connectToMongoRetry = async () => {
+  mongoose
+    .connect(MONGO_URL)
+    .then(() => console.log("Connected to mongodb"))
+    .catch(async (e) => {
+      console.log("error while connecting to mongodb", e);
+      await setTimeout(5000);
+      connectToMongoRetry();
+    });
+};
+
+connectToMongoRetry();
 
 app.get("/", (_req, res) => {
-  //   res.json({
-  //     success: true,
-  //     message: "successful response",
-  //   });
-  //   return res.status(200).json({
-  //     success: true,
-  //     message: "successful response",
-  //   });
-
-  //   res.status(200).send();
-
   res.send("<H1>HI There!!</H1>");
 });
 

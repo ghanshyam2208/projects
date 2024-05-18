@@ -1,11 +1,15 @@
 version: "3"
 services:
   my-node-app:
+    depends_on:
+      - my-node-app-mongo
     volumes:
       - ./:/usr/src/app
     environment:
       - NODE_ENV=development
     command: npm run dev
+    env_file:
+      - ./.env
 
   my-node-app-mongo:
     image: mongo:3.6
