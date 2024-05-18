@@ -9,7 +9,7 @@ services:
       - NODE_ENV=development
     command: npm run dev
     env_file:
-      - ./.env
+      - ./development.env
 
   my-node-app-mongo:
     image: mongo:3.6
