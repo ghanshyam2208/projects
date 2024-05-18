@@ -5,12 +5,13 @@ const {
   MONGO_PASSWORD,
   MONGO_HOST,
   MONGO_PORT,
-  APP_PORT,
+  PORT,
+  MONGO_DATABASE,
 } = require("./config/config");
 
 const app = express();
-const PORT = APP_PORT || 3000;
-const MONGO_URL = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/?authSource=admin`;
+
+const MONGO_URL = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE}?authSource=admin`;
 
 const connectToMongoRetry = async () => {
   mongoose
