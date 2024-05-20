@@ -1,0 +1,6 @@
+packages:
+  # all packages in packages/
+  - "packages/*"
+  - "services/sample-backend"
+  - "services/sample-communication"
+  - "services/sample-analytics"
