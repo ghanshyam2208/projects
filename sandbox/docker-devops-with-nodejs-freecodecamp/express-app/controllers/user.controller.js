@@ -32,8 +32,6 @@ const login = async (req, res, next) => {
     let decrypted =
       decipher.update(user.password, "hex", "utf8") + decipher.final("utf8");
 
-    console.log(decrypted);
-
     if (decrypted !== req.body.password) {
       throw new Error(`Password did not match!`);
     }

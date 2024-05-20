@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const redis = require("redis");
 const RedisStore = require("connect-redis").default;
+const cors = require("cors");
 
 const {
   MONGO_USERNAME,
@@ -30,6 +31,9 @@ const connectToMongoRetry = () => {
     });
 };
 
+app.use(cors());
+app.enable("trust proxy");
+
 const redisClient = redis.createClient({
   url: `redis://${REDIS_URL}:${REDIS_PORT}`,
 });
@@ -55,15 +59,14 @@ app.use(
   })
 );
 
-// connectToRedisRetry();
 connectToMongoRetry();
 
 app.use(express.json());
 
-app.use("/", require("./routes/post.route"));
-app.use("/", require("./routes/user.routes"));
+app.use("/api/", require("./routes/post.route"));
+app.use("/api/", require("./routes/user.routes"));
 
-app.get("/", (_req, res) => {
+app.get("/api", (_req, res) => {
   res.send("<H1>HI There!!</H1>");
 });
 
