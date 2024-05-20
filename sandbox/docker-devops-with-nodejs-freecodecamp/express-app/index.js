@@ -42,12 +42,6 @@ redisClient.on("error", function (error) {
 });
 redisClient.connect().catch(console.error);
 
-// Initialize store.
-let redisStore = new RedisStore({
-  client: redisClient,
-  // prefix: "myapp:",
-});
-
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
