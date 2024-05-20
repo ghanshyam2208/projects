@@ -10,6 +10,8 @@ services:
     command: npm run dev
     env_file:
       - ./development.env
+    networks:
+      - my-network
 
   my-node-app-mongo:
     image: mongo:3.6
@@ -22,6 +24,20 @@ services:
     restart: "no"
     volumes:
       - mongodb:/data/db
+    networks:
+      - my-network
+
+  redis:
+    image: redis
+    container_name: my-node-redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - my-network
 
 volumes:
   mongodb:
+
+networks:
+  my-network:
+    driver: bridge
