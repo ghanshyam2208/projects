@@ -7,6 +7,10 @@ async function bootstrap() {
     AppModule,
     {
       transport: Transport.TCP,
+      options: {
+        port: 60002,
+        host: '0.0.0.0',
+      },
     },
   );
 
