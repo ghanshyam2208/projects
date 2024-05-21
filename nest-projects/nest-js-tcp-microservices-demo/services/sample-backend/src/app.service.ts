@@ -8,6 +8,7 @@ export class AppService {
 
   constructor(
     @Inject('COMMUNICATION') private readonly communicationClient: ClientProxy,
+    @Inject('ANALYTICS') private readonly analyticsClient: ClientProxy,
   ) {}
 
   getHello(): string {
@@ -21,6 +22,14 @@ export class AppService {
       'user_created',
       new CreateUserEvent(userCreatePayload.email),
     );
+    this.analyticsClient.emit(
+      'user_created',
+      new CreateUserEvent(userCreatePayload.email),
+    );
     return userCreatePayload;
+  }
+
+  getAnalytics(): any {
+    return this.analyticsClient.send({ cmd: 'get_analytics' }, {});
   }
 }
