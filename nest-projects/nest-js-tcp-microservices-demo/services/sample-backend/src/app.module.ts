@@ -8,18 +8,18 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ClientsModule.register([
       {
         name: 'ANALYTICS',
-        transport: Transport.TCP,
+        transport: Transport.RMQ,
         options: {
-          host: '0.0.0.0',
-          port: 9003,
+          urls: ['amqp://0.0.0.0:5672'],
+          queue: 'analytics',
         },
       },
       {
         name: 'COMMUNICATION',
-        transport: Transport.TCP,
+        transport: Transport.RMQ,
         options: {
-          host: '0.0.0.0',
-          port: 9002,
+          urls: ['amqp://0.0.0.0:5672'],
+          queue: 'notifications',
         },
       },
     ]),
