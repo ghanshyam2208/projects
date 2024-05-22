@@ -1,0 +1,10 @@
+packages:
+  # all packages in packages/
+  - "packages/pk-logger"
+  - "packages/pk-common"
+  - "services/ms-users-mgmt"
+  - "services/ms-auth"
+  - "services/ms-search"
+  - "services/ms-content-mgmt"
+  - "services/ms-content-server"
+  - "services/ms-notification"
