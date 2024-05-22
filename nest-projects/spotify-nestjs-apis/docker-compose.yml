@@ -8,12 +8,15 @@ services:
       - ./services/ms-users-mgmt/:/usr/src/app/services/ms-users-mgmt
     ports:
       - "22000:22000"
-      - "9229:9229"
+      - "9229:9229" # debugging port
     env_file:
       - ./services/ms-users-mgmt/.env
     networks:
       - spotify-lo-network
-    command: pnpm --filter "ms-users-mgmt" start:debug
+    # debug command
+    # command: pnpm --filter "ms-users-mgmt" start:debug
+    # dev command
+    command: pnpm --filter "ms-users-mgmt" start:dev
 
 networks:
   spotify-lo-network:
