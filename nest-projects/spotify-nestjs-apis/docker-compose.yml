@@ -18,6 +18,36 @@ services:
     # dev command
     command: pnpm --filter "ms-users-mgmt" start:dev
 
+  postgres-service:
+    image: postgres:13
+    container_name: postgres-service
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: mydatabase # this should come from env file
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - spotify-lo-network
+
+  pgadmin-service:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-service
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres-service
+    networks:
+      - spotify-lo-network
+
+volumes:
+  postgres-data:
+
 networks:
   spotify-lo-network:
     driver: bridge
