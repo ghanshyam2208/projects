@@ -1,0 +1,16 @@
+version: "3"
+services:
+  ms-users-mgmt:
+    build:
+      context: .
+      dockerfile: ./services/ms-users-mgmt/ms-users-mgmt.dockerfile
+    volumes:
+      - ./services/ms-users-mgmt/:/usr/src/app:ro
+    env_file:
+      - ./services/ms-users-mgmt/.env
+    # networks:
+    #   - spotify-lo-network
+    command: pnpm --filter "ms-users-mgmt" start
+# networks:
+#   spotify-lo-network:
+#     driver: bridge

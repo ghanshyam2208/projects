@@ -1,0 +1,8 @@
+services/*/node_modules
+services/*/.eslintrc.js
+services/*/.prettierrc
+.dockerignore
+dockerfiles
+node_modules
+services/*/dist
+services/*/*.dockerfile
