@@ -5,12 +5,15 @@ services:
       context: .
       dockerfile: ./services/ms-users-mgmt/ms-users-mgmt.dockerfile
     volumes:
-      - ./services/ms-users-mgmt/:/usr/src/app:ro
+      - ./services/ms-users-mgmt/:/usr/src/app/services/ms-users-mgmt
+    ports:
+      - "22000:22000"
     env_file:
       - ./services/ms-users-mgmt/.env
-    # networks:
-    #   - spotify-lo-network
-    command: pnpm --filter "ms-users-mgmt" start
-# networks:
-#   spotify-lo-network:
-#     driver: bridge
+    networks:
+      - spotify-lo-network
+    command: pnpm --filter "ms-users-mgmt" start:dev
+
+networks:
+  spotify-lo-network:
+    driver: bridge

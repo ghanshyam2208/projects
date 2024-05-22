@@ -18,12 +18,10 @@ RUN npm install -g pnpm
 
 RUN pnpm --filter "ms-users-mgmt" install 
 
-# # Install @nestjs/cli globally
-# RUN npm install -g @nestjs/cli
 
 COPY ./services/ms-users-mgmt ./services/ms-users-mgmt
 
-# Start a bash shell by default
+# Start a bash shell by default for debugging
 # CMD ["sh"]
 # Start the application
 CMD ["pnpm", "--filter", "ms-users-mgmt", "start"]
