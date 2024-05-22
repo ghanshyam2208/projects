@@ -1,0 +1,5 @@
+packages:
+  # all packages in packages/
+  - "packages/*"
+  - "services/gateway"
+  - "services/auth-ms"
