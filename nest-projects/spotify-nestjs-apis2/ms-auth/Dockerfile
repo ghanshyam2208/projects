@@ -14,4 +14,5 @@ RUN pnpm install
 
 COPY ./ms-auth .
 
-CMD ["sh"]
+CMD ["pnpm", "start"]
+# CMD [ "sh" ]

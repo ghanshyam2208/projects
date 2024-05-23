@@ -10,11 +10,11 @@ COPY ./ms-user-mgmnt/package.json .
 
 RUN npm install -g pnpm
 
-RUN  npm install -g @nestjs/cli
-
 RUN pnpm install
 
 COPY ./ms-user-mgmnt .
+
+RUN npx prisma generate
 
 CMD ["pnpm", "start"]
 # CMD [ "sh" ]
