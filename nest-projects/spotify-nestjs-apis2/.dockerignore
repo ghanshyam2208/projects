@@ -1,0 +1,17 @@
+# Ignore node_modules directories in any subdirectory
+**/node_modules
+node_modules
+
+# Ignore dist directories in any subdirectory
+**/dist
+dist
+
+# Ignore Dockerfiles in any subdirectory
+**/Dockerfile
+Dockerfile
+
+# Ignore other configuration files or directories if needed
+.dockerignore
+.git
+.gitignore
+.env

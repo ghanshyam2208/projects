@@ -15,6 +15,7 @@ services:
     container_name: spotify-ms-users-mgmt
     volumes:
       - ./ms-user-mgmnt/:/usr/src/app/
+      - /usr/src/app/node_modules # This volume ensures that the node_modules directory inside the container is not overwritten by the empty or non-existent node_modules directory from your local machine.
 
   ms-auth:
     build:
@@ -31,6 +32,7 @@ services:
     container_name: spotify-ms-auth
     volumes:
       - ./ms-auth/:/usr/src/app/
+      - /usr/src/app/node_modules
 
 networks:
   spotify-lo-network:
