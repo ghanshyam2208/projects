@@ -1,0 +1,37 @@
+version: "3"
+services:
+  ms-user-mgmnt:
+    build:
+      context: .
+      dockerfile: ./ms-user-mgmnt/Dockerfile
+    ports:
+      - "22001:22001"
+      - "9229:9229" # debugging port
+    networks:
+      - spotify-lo-network
+    env_file:
+      - ./ms-user-mgmnt/.env
+    command: pnpm start:dev
+    container_name: spotify-ms-users-mgmt
+    volumes:
+      - ./ms-user-mgmnt/:/usr/src/app/
+
+  ms-auth:
+    build:
+      context: .
+      dockerfile: ./ms-auth/Dockerfile
+    ports:
+      - "22002:22002"
+      - "9230:9230" # debugging port
+    networks:
+      - spotify-lo-network
+    env_file:
+      - ./ms-auth/.env
+    command: pnpm start:dev
+    container_name: spotify-ms-auth
+    volumes:
+      - ./ms-auth/:/usr/src/app/
+
+networks:
+  spotify-lo-network:
+    driver: bridge
