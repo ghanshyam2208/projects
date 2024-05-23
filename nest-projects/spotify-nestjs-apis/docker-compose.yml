@@ -1,6 +1,6 @@
 version: "3"
 services:
-  ms-users-mgmt:
+  spotify-ms-users-mgmt:
     build:
       context: .
       dockerfile: ./services/ms-users-mgmt/ms-users-mgmt.dockerfile
@@ -17,8 +17,9 @@ services:
     # command: pnpm --filter "ms-users-mgmt" start:debug
     # dev command
     command: pnpm --filter "ms-users-mgmt" start:dev
+    container_name: spotify-ms-users-mgmt
 
-  ms-auth:
+  spotify-ms-auth:
     build:
       context: .
       dockerfile: ./services/ms-auth/ms-auth.dockerfile
@@ -35,6 +36,7 @@ services:
     # command: pnpm --filter "ms-auth" start:debug
     # dev command
     command: pnpm --filter "ms-auth" start:dev
+    container_name: spotify-ms-auth
 
 networks:
   spotify-lo-network:

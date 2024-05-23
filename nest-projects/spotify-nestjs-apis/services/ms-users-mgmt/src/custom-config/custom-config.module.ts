@@ -1,5 +1,6 @@
 import { Module, Provider } from '@nestjs/common';
 import { CustomConfigService } from './custom-config.service';
+import { PrismaService } from './prisma.service';
 
 const ConfigFactory: Provider = {
   provide: CustomConfigService,
@@ -11,7 +12,7 @@ const ConfigFactory: Provider = {
 };
 
 @Module({
-  providers: [ConfigFactory],
-  exports: [ConfigFactory],
+  providers: [ConfigFactory, PrismaService],
+  exports: [ConfigFactory, PrismaService],
 })
 export class CustomConfigModule {}

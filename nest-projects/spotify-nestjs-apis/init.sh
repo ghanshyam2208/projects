@@ -8,6 +8,8 @@ elif [ "$1" = "build" ]; then
     docker-compose -f docker-compose.yml logs -f ms-users-mgmt ms-auth 
 elif [ "$1" = "down" ]; then
     docker-compose -f ./docker-compose.yml down
+elif [ "$1" = "logs" ]; then
+    docker-compose -f docker-compose.yml logs -f ms-users-mgmt ms-auth 
 elif [ "$1" = "dbdown" ]; then
     docker-compose -f ./docker-compose-db.yml down
 else

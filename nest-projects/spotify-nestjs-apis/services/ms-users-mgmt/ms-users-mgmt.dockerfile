@@ -18,6 +18,7 @@ RUN npm install -g pnpm
 
 RUN pnpm --filter "ms-users-mgmt" install 
 
+RUN pnpm --filter "ms-users-mgmt" prisma-g
 
 COPY ./services/ms-users-mgmt ./services/ms-users-mgmt
 

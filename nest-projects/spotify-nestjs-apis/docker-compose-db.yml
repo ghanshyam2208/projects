@@ -1,8 +1,8 @@
 version: "3"
 services:
-  postgres-service:
+  spotify-postgres-service:
     image: postgres:13
-    container_name: postgres-service
+    container_name: spotify-postgres-service
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
@@ -14,16 +14,16 @@ services:
     networks:
       - spotify-lo-network
 
-  pgadmin-service:
+  spotify-pgadmin-service:
     image: dpage/pgadmin4:latest
-    container_name: pgadmin-service
+    container_name: spotify-pgadmin-service
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "8080:80"
     depends_on:
-      - postgres-service
+      - spotify-postgres-service
     networks:
       - spotify-lo-network
 
