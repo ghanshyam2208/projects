@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: ./services/ms-auth/ms-auth.dockerfile
     volumes:
-      - ./services/ms-auth/:/usr/src/app/services/ms-auth
+      - ./services/ms-auth/src:/usr/src/app/src
     ports:
       - "22002:22002"
       - "9230:9230" # debugging port
@@ -35,7 +35,8 @@ services:
     # debug command
     # command: pnpm --filter "ms-auth" start:debug
     # dev command
-    command: pnpm --filter "ms-auth" start:dev
+    # command: pnpm --filter "ms-auth" start:dev
+    command: pnpm start:dev
     container_name: spotify-ms-auth
 
 networks:
