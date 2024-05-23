@@ -7,16 +7,34 @@ services:
     volumes:
       - ./services/ms-users-mgmt/:/usr/src/app/services/ms-users-mgmt
     ports:
-      - "22000:22000"
+      - "22001:22001"
       - "9229:9229" # debugging port
     env_file:
       - ./services/ms-users-mgmt/.env
     networks:
       - spotify-lo-network
     # debug command
-    # command: pnpm --filter "ms-users-mgmt" start:debug
+    command: pnpm --filter "ms-users-mgmt" start:debug
     # dev command
-    command: pnpm --filter "ms-users-mgmt" start:dev
+    # command: pnpm --filter "ms-users-mgmt" start:dev
+
+  ms-auth:
+    build:
+      context: .
+      dockerfile: ./services/ms-auth/ms-auth.dockerfile
+    volumes:
+      - ./services/ms-auth/:/usr/src/app/services/ms-auth
+    ports:
+      - "22002:22002"
+      - "9230:9230" # debugging port
+    env_file:
+      - ./services/ms-auth/.env
+    networks:
+      - spotify-lo-network
+    # debug command
+    command: pnpm --filter "ms-auth" start:debug
+    # dev command
+    # command: pnpm --filter "ms-auth" start:dev
 
   postgres-service:
     image: postgres:13

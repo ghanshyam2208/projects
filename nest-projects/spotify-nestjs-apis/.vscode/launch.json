@@ -7,13 +7,30 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "debug node js using docker",
+      "name": "ms-user-mgmt",
       "address": "localhost",
       "port": 9229,
       "sourceMaps": true,
       "restart": true,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/usr/src/app"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "ms-auth",
+      "address": "localhost",
+      "port": 9230,
+      "sourceMaps": true,
+      "restart": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/usr/src/app"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "start debugging",
+      "configurations": ["ms-auth", "ms-user-mgmt"]
     }
   ]
 }
