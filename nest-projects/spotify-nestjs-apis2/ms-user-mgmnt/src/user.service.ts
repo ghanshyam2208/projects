@@ -1,5 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserPayload, sanitizedUserResponse } from './user.validation';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import {
+  CreateUserPayload,
+  LoginPayload,
+  sanitizedUserResponse,
+} from './user.validation';
 import { UserRepository } from './user.repository';
 import { CryptoHelper } from './prisma/crypto.helper';
 
@@ -23,5 +32,29 @@ export class UserService {
       }
       throw error;
     }
+  }
+
+  async loginUser(loginPayload: LoginPayload) {
+    const user = await this.userRepository.findUserByEmail(loginPayload.email);
+    if (!user) {
+      throw new NotFoundException(
+        `User not found with email ${loginPayload.email}`,
+      );
+    }
+    const decryptedPassword = this.cryptoHelper.decrypt(user.password);
+    if (decryptedPassword !== loginPayload.password) {
+      throw new UnauthorizedException(`Username or password is wrong`);
+    }
+    const payload = { sub: user.id, email: user.email };
+    return {
+      // accessToken: await this.jwtService.signAsync(payload, {
+      //   secret: process.env.CRYPTO_SECRET,
+      //   expiresIn: '1d',
+      // }),
+      login: true,
+      payload: {
+        ...payload,
+      },
+    };
   }
 }

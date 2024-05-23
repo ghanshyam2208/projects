@@ -12,4 +12,11 @@ export class UserController {
   ) {
     return this.userService.registerUser(createUserPayload);
   }
+
+  @Post('login')
+  loginUser(
+    @Body(new CreateUserValidationPipe()) createUserPayload: CreateUserPayload,
+  ) {
+    return this.userService.loginUser(createUserPayload);
+  }
 }
