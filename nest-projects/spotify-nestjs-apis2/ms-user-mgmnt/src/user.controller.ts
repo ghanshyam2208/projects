@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateUserPayload, CreateUserValidationPipe } from './user.validation';
 import { UserService } from './user.service';
+import { PostTodoDTO } from 'proto/todo';
 
 @Controller('user')
 export class UserController {
@@ -18,5 +19,16 @@ export class UserController {
     @Body(new CreateUserValidationPipe()) createUserPayload: CreateUserPayload,
   ) {
     return this.userService.loginUser(createUserPayload);
+  }
+
+  @Get()
+  getTodos() {
+    return this.userService.getTodos();
+  }
+
+  @Post('todo')
+  postTodos(@Body() postTodoDTO: PostTodoDTO) {
+    console.log(postTodoDTO);
+    return this.userService.postTodos(postTodoDTO);
   }
 }

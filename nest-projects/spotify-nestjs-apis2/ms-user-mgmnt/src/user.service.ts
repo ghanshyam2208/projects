@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
@@ -11,13 +13,31 @@ import {
 } from './user.validation';
 import { UserRepository } from './user.repository';
 import { CryptoHelper } from './prisma/crypto.helper';
+import { PostTodoDTO, TODO_SERVICE_NAME, TodoServiceClient } from 'proto/todo';
+import { ClientGrpc } from '@nestjs/microservices';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
+  private todoServiceClient: TodoServiceClient;
   constructor(
     private readonly userRepository: UserRepository,
     private readonly cryptoHelper: CryptoHelper,
+    @Inject('todo') private todoGrpcClient: ClientGrpc,
   ) {}
+
+  onModuleInit() {
+    this.todoServiceClient =
+      this.todoGrpcClient.getService<TodoServiceClient>(TODO_SERVICE_NAME);
+  }
+
+  getTodos() {
+    return this.todoServiceClient.getTodos({});
+  }
+
+  postTodos(postTodoDTO: PostTodoDTO) {
+    console.log(postTodoDTO);
+    return this.todoServiceClient.postTodo(postTodoDTO);
+  }
 
   async registerUser(createUserPayload: CreateUserPayload) {
     try {
