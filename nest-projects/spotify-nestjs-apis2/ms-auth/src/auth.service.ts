@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { AuthToken, GetAuthTokenPayload } from 'proto/auth';
 import { PostTodoDTO, Todo, Todos } from 'proto/todo';
 import { Observable } from 'rxjs';
+import { AuthHelper } from './auth.helper';
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly authHelper: AuthHelper) {}
   private readonly todos: Todo[] = [
     {
       description: 'test',
@@ -24,6 +27,14 @@ export class AuthService {
   getTodos(): Promise<Todos> | Observable<Todos> | Todos {
     return {
       Todos: this.todos,
+    };
+  }
+
+  async getAuthToken(request: GetAuthTokenPayload): Promise<AuthToken> {
+    const jwtToken = await this.authHelper.signJwtToken(request);
+    return {
+      accessToken: jwtToken,
+      refreshToken: jwtToken,
     };
   }
 }

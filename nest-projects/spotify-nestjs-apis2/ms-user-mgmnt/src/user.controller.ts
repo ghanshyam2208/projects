@@ -28,7 +28,6 @@ export class UserController {
 
   @Post('todo')
   postTodos(@Body() postTodoDTO: PostTodoDTO) {
-    console.log(postTodoDTO);
     return this.userService.postTodos(postTodoDTO);
   }
 }

@@ -15,19 +15,25 @@ import { UserRepository } from './user.repository';
 import { CryptoHelper } from './prisma/crypto.helper';
 import { PostTodoDTO, TODO_SERVICE_NAME, TodoServiceClient } from 'proto/todo';
 import { ClientGrpc } from '@nestjs/microservices';
+import { AUTH_SERVICE_NAME, AuthServiceClient, AuthToken } from 'proto/auth';
 
 @Injectable()
 export class UserService implements OnModuleInit {
   private todoServiceClient: TodoServiceClient;
+  private authServiceClient: AuthServiceClient;
+
   constructor(
     private readonly userRepository: UserRepository,
     private readonly cryptoHelper: CryptoHelper,
-    @Inject('todo') private todoGrpcClient: ClientGrpc,
+    @Inject('MULTI_PACKAGE_NAME') private todoGrpcClient: ClientGrpc,
   ) {}
 
   onModuleInit() {
     this.todoServiceClient =
       this.todoGrpcClient.getService<TodoServiceClient>(TODO_SERVICE_NAME);
+
+    this.authServiceClient =
+      this.todoGrpcClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
   getTodos() {
@@ -35,7 +41,6 @@ export class UserService implements OnModuleInit {
   }
 
   postTodos(postTodoDTO: PostTodoDTO) {
-    console.log(postTodoDTO);
     return this.todoServiceClient.postTodo(postTodoDTO);
   }
 
@@ -65,15 +70,18 @@ export class UserService implements OnModuleInit {
     if (decryptedPassword !== loginPayload.password) {
       throw new UnauthorizedException(`Username or password is wrong`);
     }
-    const payload = { sub: user.id, email: user.email };
+
+    const tokenPayload = (await this.authServiceClient
+      .getAuthToken({
+        email: user.email,
+        userId: user.id,
+      })
+      .toPromise()) as AuthToken;
+
     return {
-      // accessToken: await this.jwtService.signAsync(payload, {
-      //   secret: process.env.CRYPTO_SECRET,
-      //   expiresIn: '1d',
-      // }),
       login: true,
       payload: {
-        ...payload,
+        ...tokenPayload,
       },
     };
   }

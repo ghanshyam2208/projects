@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+    rpc GetAuthToken (GetAuthTokenPayload) returns (AuthToken) {}
+}
+
+message GetAuthTokenPayload {
+    string userId = 1;
+    string email = 2;
+}
+
+message AuthToken {
+    string accessToken = 1;
+    string refreshToken = 2;
+}

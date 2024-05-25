@@ -6,6 +6,7 @@ import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth.module';
 import { TODO_PACKAGE_NAME } from 'proto/todo';
+import { AUTH_PACKAGE_NAME } from 'proto/auth';
 async function bootstrap() {
   // Create a new NestJS application instance
   const app = await NestFactory.create(AuthModule);
@@ -21,11 +22,14 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       // Set the proto file path
-      protoPath: join(__dirname, '../proto/todo.proto'),
+      protoPath: [
+        join(__dirname, '../proto/todo.proto'),
+        join(__dirname, '../proto/auth.proto'),
+      ],
       // Set the URL for the GRPC microservice
       url: grpcUrl,
       // Set the package name for the GRPC service
-      package: TODO_PACKAGE_NAME,
+      package: [TODO_PACKAGE_NAME, AUTH_PACKAGE_NAME],
     },
   });
 
