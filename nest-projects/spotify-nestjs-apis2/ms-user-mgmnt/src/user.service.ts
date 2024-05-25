@@ -25,7 +25,7 @@ export class UserService implements OnModuleInit {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly cryptoHelper: CryptoHelper,
-    @Inject('MULTI_PACKAGE_NAME') private todoGrpcClient: ClientGrpc,
+    @Inject('MULTI_PACKAGE_LOOKUP_NAME') private todoGrpcClient: ClientGrpc,
   ) {}
 
   onModuleInit() {

@@ -7,7 +7,7 @@ import { AUTH_PACKAGE_NAME } from 'proto/auth';
 export const ClientsModuleImports = ClientsModule.registerAsync([
   {
     imports: [ConfigModule],
-    name: 'MULTI_PACKAGE_NAME',
+    name: 'MULTI_PACKAGE_LOOKUP_NAME',
     useFactory: async (configService: ConfigService) => ({
       transport: Transport.GRPC,
       options: {
