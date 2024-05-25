@@ -16,14 +16,6 @@ import { CryptoHelper } from './prisma/crypto.helper';
 import { PostTodoDTO, TODO_SERVICE_NAME, TodoServiceClient } from 'proto/todo';
 import { ClientGrpc } from '@nestjs/microservices';
 import { AUTH_SERVICE_NAME, AuthServiceClient, AuthToken } from 'proto/auth';
-import { CallOptions } from '@grpc/grpc-js';
-import { timeout } from 'rxjs';
-
-// ...
-
-const callOptions: CallOptions = {
-  deadline: Date.now() + 500, // Timeout of 5 seconds
-};
 
 @Injectable()
 export class UserService implements OnModuleInit {
