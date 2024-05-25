@@ -1,4 +1,4 @@
-import { GetAuthTokenPayload } from 'proto/auth';
+import { GetAuthTokenPayload, VerifyTokenResponse } from 'proto/auth';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
@@ -15,22 +15,34 @@ export class AuthHelper {
     });
   }
 
-  async verifyJwtToken(token: string) {
+  async verifyJwtToken(token: string): Promise<VerifyTokenResponse> {
     return new Promise((resolve) => {
       console.log(token);
       try {
         const payload = jwt.verify(
           token,
           this.configService.get('ACCESS_TOKEN_SECRET'),
-        );
+        ) as unknown as GetAuthTokenPayload;
         if (payload) {
           console.log(payload);
-          return resolve(true);
+          return resolve({
+            isValid: true,
+            getAuthTokenPayload: {
+              email: payload?.email || '',
+              userId: payload?.userId || '',
+            },
+          });
         }
 
-        return resolve(false);
+        return resolve({
+          isValid: false,
+          getAuthTokenPayload: { email: '', userId: '' },
+        });
       } catch {
-        return resolve(false);
+        return resolve({
+          isValid: false,
+          getAuthTokenPayload: { email: '', userId: '' },
+        });
       }
     });
   }

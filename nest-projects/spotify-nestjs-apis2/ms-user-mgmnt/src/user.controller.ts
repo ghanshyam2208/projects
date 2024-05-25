@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import {
   CreateUserPayload,
   CreateUserValidationPipe,
@@ -7,7 +14,7 @@ import {
 } from './user.validation';
 import { UserService } from './user.service';
 import { PostTodoDTO } from 'proto/todo';
-import { AuthGuard } from './guards/user.guard';
+import { AuthGuard, CustomRequest } from './guards/user.guard';
 
 @Controller('user')
 export class UserController {
@@ -27,7 +34,8 @@ export class UserController {
 
   @Get()
   @UseGuards(AuthGuard)
-  getTodos() {
+  getTodos(@Request() req: CustomRequest) {
+    console.log('request object is attached with user', req.user);
     return this.userService.getTodos();
   }
 

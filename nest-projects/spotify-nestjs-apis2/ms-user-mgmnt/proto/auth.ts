@@ -26,6 +26,7 @@ export interface VerifyTokenPayload {
 
 export interface VerifyTokenResponse {
   isValid: boolean;
+  getAuthTokenPayload: GetAuthTokenPayload | undefined;
 }
 
 export const AUTH_PACKAGE_NAME = 'auth';

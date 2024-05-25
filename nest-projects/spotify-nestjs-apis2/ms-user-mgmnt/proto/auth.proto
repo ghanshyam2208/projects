@@ -23,4 +23,5 @@ message VerifyTokenPayload {
 
 message VerifyTokenResponse {
     bool isValid = 1;
+    GetAuthTokenPayload getAuthTokenPayload = 2;
 }

@@ -1,6 +1,11 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
+import { GetAuthTokenPayload } from 'proto/auth';
 import { UserService } from 'src/user.service';
+
+export interface CustomRequest extends Request {
+  user?: GetAuthTokenPayload;
+}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -8,14 +13,18 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const request = context.switchToHttp().getRequest<Request>();
+      const request = context.switchToHttp().getRequest<CustomRequest>();
       const token = this.extractTokenFromHeader(request);
 
       if (!token) {
         return false;
       }
 
-      return this.userService.callAuthVerifyToken(token);
+      const verifyTokenResponse =
+        await this.userService.callAuthVerifyToken(token);
+
+      request.user = verifyTokenResponse.getAuthTokenPayload;
+      return verifyTokenResponse.isValid;
     } catch (error) {
       return false;
     }

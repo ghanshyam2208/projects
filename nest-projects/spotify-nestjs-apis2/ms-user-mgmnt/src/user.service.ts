@@ -93,6 +93,6 @@ export class UserService implements OnModuleInit {
       })
       .toPromise();
 
-    return verifyTokenResponse.isValid;
+    return verifyTokenResponse;
   }
 }

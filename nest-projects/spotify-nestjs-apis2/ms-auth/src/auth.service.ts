@@ -45,11 +45,9 @@ export class AuthService {
   }
 
   async verifyToken(request: VerifyTokenPayload): Promise<VerifyTokenResponse> {
-    const isValid = (await this.authHelper.verifyJwtToken(
+    const verifyTOkenResponse = await this.authHelper.verifyJwtToken(
       request.accessToken,
-    )) as boolean;
-    return {
-      isValid,
-    };
+    );
+    return verifyTOkenResponse;
   }
 }
