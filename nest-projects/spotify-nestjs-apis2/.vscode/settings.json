@@ -1,3 +1,7 @@
 {
-  "cSpell.words": ["proto", "protobuf", "protoc", "Todos"]
+  "cSpell.words": ["proto", "protobuf", "protoc", "Todos"],
+  "editor.tokenColorCustomizations": {
+    "comments": "",
+    "textMateRules": []
+  }
 }
