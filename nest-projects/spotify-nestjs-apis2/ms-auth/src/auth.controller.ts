@@ -3,7 +3,13 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { PostTodoDTO, TODO_SERVICE_NAME, Todo, Todos } from 'proto/todo';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { AUTH_SERVICE_NAME, AuthToken, GetAuthTokenPayload } from 'proto/auth';
+import {
+  AUTH_SERVICE_NAME,
+  AuthToken,
+  GetAuthTokenPayload,
+  VerifyTokenPayload,
+  VerifyTokenResponse,
+} from 'proto/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -24,5 +30,15 @@ export class AuthController {
     request: GetAuthTokenPayload,
   ): Promise<AuthToken> | Observable<AuthToken> | AuthToken {
     return this.authService.getAuthToken(request);
+  }
+
+  @GrpcMethod(AUTH_SERVICE_NAME, 'verifyToken')
+  verifyToken(
+    request: VerifyTokenPayload,
+  ):
+    | Promise<VerifyTokenResponse>
+    | Observable<VerifyTokenResponse>
+    | VerifyTokenResponse {
+    return this.authService.verifyToken(request);
   }
 }

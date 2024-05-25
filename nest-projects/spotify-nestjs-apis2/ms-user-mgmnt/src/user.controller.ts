@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import {
   CreateUserPayload,
   CreateUserValidationPipe,
@@ -7,6 +7,7 @@ import {
 } from './user.validation';
 import { UserService } from './user.service';
 import { PostTodoDTO } from 'proto/todo';
+import { AuthGuard } from './guards/user.guard';
 
 @Controller('user')
 export class UserController {
@@ -25,6 +26,7 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   getTodos() {
     return this.userService.getTodos();
   }

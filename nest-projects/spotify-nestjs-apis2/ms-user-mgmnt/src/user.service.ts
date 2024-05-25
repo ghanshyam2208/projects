@@ -85,4 +85,14 @@ export class UserService implements OnModuleInit {
       },
     };
   }
+
+  async callAuthVerifyToken(token: string) {
+    const verifyTokenResponse = await this.authServiceClient
+      .verifyToken({
+        accessToken: token,
+      })
+      .toPromise();
+
+    return verifyTokenResponse.isValid;
+  }
 }

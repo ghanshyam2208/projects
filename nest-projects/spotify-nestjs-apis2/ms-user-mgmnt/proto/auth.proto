@@ -4,6 +4,7 @@ package auth;
 
 service AuthService {
     rpc GetAuthToken (GetAuthTokenPayload) returns (AuthToken) {}
+    rpc VerifyToken (VerifyTokenPayload) returns (VerifyTokenResponse) {}
 }
 
 message GetAuthTokenPayload {
@@ -14,4 +15,12 @@ message GetAuthTokenPayload {
 message AuthToken {
     string accessToken = 1;
     string refreshToken = 2;
+}
+
+message VerifyTokenPayload {
+    string accessToken = 1;
+}
+
+message VerifyTokenResponse {
+    bool isValid = 1;
 }

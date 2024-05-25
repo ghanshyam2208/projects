@@ -20,21 +20,38 @@ export interface AuthToken {
   refreshToken: string;
 }
 
+export interface VerifyTokenPayload {
+  accessToken: string;
+}
+
+export interface VerifyTokenResponse {
+  isValid: boolean;
+}
+
 export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface AuthServiceClient {
   getAuthToken(request: GetAuthTokenPayload): Observable<AuthToken>;
+
+  verifyToken(request: VerifyTokenPayload): Observable<VerifyTokenResponse>;
 }
 
 export interface AuthServiceController {
   getAuthToken(
     request: GetAuthTokenPayload,
   ): Promise<AuthToken> | Observable<AuthToken> | AuthToken;
+
+  verifyToken(
+    request: VerifyTokenPayload,
+  ):
+    | Promise<VerifyTokenResponse>
+    | Observable<VerifyTokenResponse>
+    | VerifyTokenResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['getAuthToken'];
+    const grpcMethods: string[] = ['getAuthToken', 'verifyToken'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { AuthToken, GetAuthTokenPayload } from 'proto/auth';
+import {
+  AuthToken,
+  GetAuthTokenPayload,
+  VerifyTokenPayload,
+  VerifyTokenResponse,
+} from 'proto/auth';
 import { PostTodoDTO, Todo, Todos } from 'proto/todo';
 import { Observable } from 'rxjs';
 import { AuthHelper } from './auth.helper';
+import { request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +41,15 @@ export class AuthService {
     return {
       accessToken: jwtToken,
       refreshToken: jwtToken,
+    };
+  }
+
+  async verifyToken(request: VerifyTokenPayload): Promise<VerifyTokenResponse> {
+    const isValid = (await this.authHelper.verifyJwtToken(
+      request.accessToken,
+    )) as boolean;
+    return {
+      isValid,
     };
   }
 }

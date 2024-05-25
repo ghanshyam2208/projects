@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthHelper } from './auth.helper';
 
 @Module({
@@ -11,6 +11,17 @@ import { AuthHelper } from './auth.helper';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthHelper],
+  providers: [AuthService, AuthHelper, ConfigService],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor(private readonly configService: ConfigService) {
+    console.log(
+      'ACCESS_TOKEN_SECRET:',
+      this.configService.get<string>('ACCESS_TOKEN_SECRET'),
+    );
+    console.log(
+      'ACCESS_TOKEN_EXPIRY:',
+      this.configService.get<string>('ACCESS_TOKEN_EXPIRY'),
+    );
+  }
+}
