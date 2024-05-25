@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
       request.user = verifyTokenResponse.getAuthTokenPayload;
       return verifyTokenResponse.isValid;
     } catch (error) {
-      return false;
+      throw error;
     }
   }
 

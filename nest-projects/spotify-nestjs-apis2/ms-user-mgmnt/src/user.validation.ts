@@ -8,6 +8,7 @@ export class CreateUserPayload {
   lastName: string;
   email: string;
   password: string;
+  emailVerificationOtp: string;
 }
 
 export class LoginPayload {

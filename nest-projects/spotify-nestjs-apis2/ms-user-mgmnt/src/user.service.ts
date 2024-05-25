@@ -16,6 +16,14 @@ import { CryptoHelper } from './prisma/crypto.helper';
 import { PostTodoDTO, TODO_SERVICE_NAME, TodoServiceClient } from 'proto/todo';
 import { ClientGrpc } from '@nestjs/microservices';
 import { AUTH_SERVICE_NAME, AuthServiceClient, AuthToken } from 'proto/auth';
+import { CallOptions } from '@grpc/grpc-js';
+import { timeout } from 'rxjs';
+
+// ...
+
+const callOptions: CallOptions = {
+  deadline: Date.now() + 500, // Timeout of 5 seconds
+};
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -49,7 +57,12 @@ export class UserService implements OnModuleInit {
       createUserPayload.password = this.cryptoHelper.encrypt(
         createUserPayload.password,
       );
-      const user = await this.userRepository.registerUser(createUserPayload);
+      const emailVerificationOtp = (() =>
+        Math.floor(Math.random() * 900000) + 100000)().toString();
+      const user = await this.userRepository.registerUser({
+        ...createUserPayload,
+        emailVerificationOtp,
+      });
       return sanitizedUserResponse(user);
     } catch (error) {
       if (error.code === 'P2002') {

@@ -11,6 +11,7 @@ export class UserRepository {
       data: {
         ...createUserPayload,
         isEmailVerified: false,
+        createdAt: new Date(),
       },
     });
   }
