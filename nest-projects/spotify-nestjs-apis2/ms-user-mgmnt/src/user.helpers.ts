@@ -21,4 +21,18 @@ export const ClientsModuleImports = ClientsModule.registerAsync([
     }),
     inject: [ConfigService],
   },
+  {
+    imports: [ConfigModule],
+    name: 'NOTIFICATION_SERVICE',
+    useFactory: async (configService: ConfigService) => ({
+      transport: Transport.RMQ,
+      options: {
+        urls: [
+          `amqp://${configService.get<string>('NOTIFICATION_RMQ_HOST_IP')}:${configService.get<string>('NOTIFICATION_RMQ_HOST_PORT')}`,
+        ],
+        queue: 'notifications',
+      },
+    }),
+    inject: [ConfigService],
+  },
 ]);

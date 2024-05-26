@@ -27,6 +27,12 @@ services:
     networks:
       - spotify-lo-network
 
+  spotify-rabbitmq:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+    container_name: spotify-rabbitmq
+
 volumes:
   postgres-data:
 

@@ -14,7 +14,7 @@ import {
 import { UserRepository } from './user.repository';
 import { CryptoHelper } from './prisma/crypto.helper';
 import { PostTodoDTO, TODO_SERVICE_NAME, TodoServiceClient } from 'proto/todo';
-import { ClientGrpc } from '@nestjs/microservices';
+import { ClientGrpc, ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_NAME, AuthServiceClient, AuthToken } from 'proto/auth';
 
 @Injectable()
@@ -26,6 +26,8 @@ export class UserService implements OnModuleInit {
     private readonly userRepository: UserRepository,
     private readonly cryptoHelper: CryptoHelper,
     @Inject('MULTI_PACKAGE_LOOKUP_NAME') private todoGrpcClient: ClientGrpc,
+    @Inject('NOTIFICATION_SERVICE')
+    private readonly notificationClient: ClientProxy,
   ) {}
 
   onModuleInit() {
@@ -75,7 +77,10 @@ export class UserService implements OnModuleInit {
     if (decryptedPassword !== loginPayload.password) {
       throw new UnauthorizedException(`Username or password is wrong`);
     }
-
+    this.notificationClient.emit('login', {
+      userId: user.id,
+      email: user.email,
+    });
     const tokenPayload = (await this.authServiceClient
       .getAuthToken({
         email: user.email,
