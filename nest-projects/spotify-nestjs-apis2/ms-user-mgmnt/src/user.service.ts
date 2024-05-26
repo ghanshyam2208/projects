@@ -1,11 +1,12 @@
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   NotFoundException,
   OnModuleInit,
-  UnauthorizedException,
 } from '@nestjs/common';
 import {
   CreateUserPayload,
@@ -81,7 +82,10 @@ export class UserService implements OnModuleInit {
     }
     const decryptedPassword = this.cryptoHelper.decrypt(user.password);
     if (decryptedPassword !== loginPayload.password) {
-      throw new UnauthorizedException(`Username or password is wrong`);
+      throw new HttpException(
+        'Username or password is wrong',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (user.emailVerificationOtp) {
@@ -118,11 +122,19 @@ export class UserService implements OnModuleInit {
     return verifyTokenResponse;
   }
 
-  async verifyEmail(userId: string) {
+  async verifyEmail(userId: string, verificationOtp: number) {
     const user = await this.userRepository.findUserById(userId);
     if (!user) {
-      throw new ForbiddenException(
+      throw new HttpException(
         'you are not allowed t access this resource',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (verificationOtp.toString() !== user.emailVerificationOtp) {
+      throw new HttpException(
+        'OTP provided did not match',
+        HttpStatus.BAD_REQUEST,
       );
     }
 

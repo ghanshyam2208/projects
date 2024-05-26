@@ -88,6 +88,7 @@ export const UserResponseSchema = Joi.object({
   firstName: Joi.any(),
   lastName: Joi.any(),
   email: Joi.any(),
+  emailVerificationOtp: Joi.any(),
 }).unknown(false); // Set unknown(false) to exclude unknown keys
 
 // Validate a user object against the schema

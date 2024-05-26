@@ -41,12 +41,13 @@ export class UserController {
   }
 
   @Post('todo')
+  @UseGuards(AuthGuard)
   postTodos(@Body() postTodoDTO: PostTodoDTO) {
     return this.userService.postTodos(postTodoDTO);
   }
 
   @Get('verify')
-  getExample(
+  async verify(
     @Query('userId') userId: string,
     @Query('verificationOtp') verificationOtp: number,
   ) {
@@ -55,7 +56,7 @@ export class UserController {
     console.log('verificationOtp:', verificationOtp);
 
     // Perform some actions with the parameters
-    this.userService.verifyEmail(userId);
+    await this.userService.verifyEmail(userId, verificationOtp);
     // Return a response
     return {
       message: 'Received query parameters',
