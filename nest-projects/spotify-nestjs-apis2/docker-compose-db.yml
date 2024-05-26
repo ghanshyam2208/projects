@@ -33,6 +33,15 @@ services:
       - 5672:5672
     container_name: spotify-rabbitmq
 
+  spotify-mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025" # SMTP port
+      - "8025:8025" # Web UI port
+    container_name: spotify-mailhog
+    networks:
+      - spotify-lo-network
+
 volumes:
   postgres-data:
 

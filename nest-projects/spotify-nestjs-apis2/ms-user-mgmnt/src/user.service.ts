@@ -57,6 +57,11 @@ export class UserService implements OnModuleInit {
         ...createUserPayload,
         emailVerificationOtp,
       });
+      this.notificationClient.emit('user_created_otp', {
+        userId: user.id,
+        email: user.email,
+        emailVerificationOtp,
+      });
       return sanitizedUserResponse(user);
     } catch (error) {
       if (error.code === 'P2002') {
@@ -77,10 +82,6 @@ export class UserService implements OnModuleInit {
     if (decryptedPassword !== loginPayload.password) {
       throw new UnauthorizedException(`Username or password is wrong`);
     }
-    this.notificationClient.emit('login', {
-      userId: user.id,
-      email: user.email,
-    });
     const tokenPayload = (await this.authServiceClient
       .getAuthToken({
         email: user.email,
