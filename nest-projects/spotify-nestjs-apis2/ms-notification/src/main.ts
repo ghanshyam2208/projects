@@ -4,18 +4,6 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  // const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-  //   NotificationModule,
-  //   {
-  //     transport: Transport.RMQ,
-  //     options: {
-  //       urls: ['amqp://0.0.0.0:5672'],
-  //       queue: 'notifications',
-  //     },
-  //   },
-  // );
-  // app.listen();
-
   // Create a new NestJS application instance
   const app = await NestFactory.create(NotificationModule);
 
