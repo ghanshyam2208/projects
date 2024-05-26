@@ -12,6 +12,7 @@ export class NotificationService {
       userCreatedOtpEvent.email,
       'Welcome to Spotify',
       userCreatedOtpEvent.emailVerificationOtp,
+      userCreatedOtpEvent.userId,
     );
   }
 }

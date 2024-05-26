@@ -36,3 +36,6 @@ export const ClientsModuleImports = ClientsModule.registerAsync([
     inject: [ConfigService],
   },
 ]);
+
+export const userOtpGenerator = (() =>
+  Math.floor(Math.random() * 900000) + 100000)().toString();

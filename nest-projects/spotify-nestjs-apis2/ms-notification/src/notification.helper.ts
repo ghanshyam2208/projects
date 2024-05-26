@@ -13,7 +13,13 @@ export class NotificationHelper {
 
   constructor() {}
 
-  async sendMail(from: string, to: string, subject: string, otp: string) {
+  async sendMail(
+    from: string,
+    to: string,
+    subject: string,
+    otp: string,
+    id: string,
+  ) {
     this.transporter = nodemailer.createTransport({
       host: '0.0.0.0',
       port: 1025,
@@ -21,8 +27,8 @@ export class NotificationHelper {
     // Generate some random content for the email
     const randomContent = `
   <p>Thank you for signing up!</p>
-  <p>Your OTP is: <strong>${otp}</strong></p>
-  <p>Please use this OTP to verify your email address.</p>
+  <p> <strong><a href="http://localhost:22001/user/verify?userId=${id}&verificationOtp=${otp}">Link to verify your email</a></strong></p>
+  <p>Please link on the link to verify your account.</p>
 `;
 
     const mailOptions = {

@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -42,5 +43,24 @@ export class UserController {
   @Post('todo')
   postTodos(@Body() postTodoDTO: PostTodoDTO) {
     return this.userService.postTodos(postTodoDTO);
+  }
+
+  @Get('verify')
+  getExample(
+    @Query('userId') userId: string,
+    @Query('verificationOtp') verificationOtp: number,
+  ) {
+    // Access the query parameters
+    console.log('userId:', userId);
+    console.log('verificationOtp:', verificationOtp);
+
+    // Perform some actions with the parameters
+    this.userService.verifyEmail(userId);
+    // Return a response
+    return {
+      message: 'Received query parameters',
+      userId,
+      verificationOtp,
+    };
   }
 }

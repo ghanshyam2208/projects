@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -16,6 +17,7 @@ import { CryptoHelper } from './prisma/crypto.helper';
 import { PostTodoDTO, TODO_SERVICE_NAME, TodoServiceClient } from 'proto/todo';
 import { ClientGrpc, ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_NAME, AuthServiceClient, AuthToken } from 'proto/auth';
+import { userOtpGenerator } from './user.helpers';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -51,8 +53,7 @@ export class UserService implements OnModuleInit {
       createUserPayload.password = this.cryptoHelper.encrypt(
         createUserPayload.password,
       );
-      const emailVerificationOtp = (() =>
-        Math.floor(Math.random() * 900000) + 100000)().toString();
+      const emailVerificationOtp = userOtpGenerator;
       const user = await this.userRepository.registerUser({
         ...createUserPayload,
         emailVerificationOtp,
@@ -82,6 +83,16 @@ export class UserService implements OnModuleInit {
     if (decryptedPassword !== loginPayload.password) {
       throw new UnauthorizedException(`Username or password is wrong`);
     }
+
+    if (user.emailVerificationOtp) {
+      this.notificationClient.emit('user_created_otp', {
+        userId: user.id,
+        email: user.email,
+        emailVerificationOtp: userOtpGenerator,
+      });
+      throw new ForbiddenException('Email not verified');
+    }
+
     const tokenPayload = (await this.authServiceClient
       .getAuthToken({
         email: user.email,
@@ -105,5 +116,21 @@ export class UserService implements OnModuleInit {
       .toPromise();
 
     return verifyTokenResponse;
+  }
+
+  async verifyEmail(userId: string) {
+    const user = await this.userRepository.findUserById(userId);
+    if (!user) {
+      throw new ForbiddenException(
+        'you are not allowed t access this resource',
+      );
+    }
+
+    await this.userRepository.updateUser(user.id, {
+      ...user,
+      emailVerificationOtp: '',
+    });
+
+    return 'email is verified';
   }
 }

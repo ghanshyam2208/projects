@@ -9,6 +9,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
   const configService = app.get(ConfigService);
-  await app.listen(configService.get('HTTP_PORT'));
+  await app.listen(configService.get('USER_HTTP_PORT'));
 }
 bootstrap();

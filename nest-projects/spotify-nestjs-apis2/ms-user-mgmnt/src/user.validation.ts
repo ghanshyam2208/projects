@@ -11,6 +11,14 @@ export class CreateUserPayload {
   emailVerificationOtp: string;
 }
 
+export class UpdateUserPayload {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  emailVerificationOtp?: string;
+}
+
 export class LoginPayload {
   email: string;
   password: string;
