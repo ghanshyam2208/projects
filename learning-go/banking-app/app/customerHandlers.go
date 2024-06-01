@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ghanshyam2208/banking/service"
+	"github.com/gorilla/mux"
 )
 
 // type Customers struct {
@@ -41,6 +42,14 @@ type CustomerHandlers struct {
 
 func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, _ := ch.service.GetAllCustomer()
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(customers)
+}
+
+func (ch *CustomerHandlers) GetCustomerById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["customer_id"]
+	customers, _ := ch.service.GetCustomerById(id)
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(customers)
 }
