@@ -1,7 +1,6 @@
 package errs
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -18,7 +17,6 @@ func NewNotFoundError(message string) *AppError {
 }
 
 func NewInternalServerError(message ...string) *AppError {
-	fmt.Print("new internal server error called")
 	var msg = "internal server error"
 	if len(message) > 0 && message[0] != "" {
 		msg = message[0]

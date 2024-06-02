@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ghanshyam2208/banking/errs"
+	"github.com/ghanshyam2208/banking/logger"
 	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
 )
 
@@ -27,7 +28,8 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 	}
 
 	if err != nil {
-		log.Println("error while querying the database " + err.Error())
+		// log.Println("error while querying the database " + err.Error())
+		logger.Error("error while querying the database " + err.Error())
 		return nil, errs.NewInternalServerError()
 	}
 
@@ -39,7 +41,8 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 			if err == sql.ErrNoRows {
 				return nil, errs.NewNotFoundError("no customer found") // errors.errors.New("customer not found")
 			} else {
-				log.Println("error while querying the database " + err.Error())
+				// log.Println("error while querying the database " + err.Error())
+				logger.Error("error while querying the database " + err.Error())
 				return nil, errs.NewInternalServerError("unexpected database error") // errors.New("unexpected database error")
 			}
 		}
@@ -60,6 +63,7 @@ func (d CustomerRepositoryDb) ById(id string) (*Customer, *errs.AppError) {
 			return nil, errs.NewNotFoundError("customer not found") // errors.errors.New("customer not found")
 		} else {
 			log.Println("error while querying the database " + err.Error())
+			logger.Error("error while querying the database " + err.Error())
 			return nil, errs.NewInternalServerError("unexpected database error") // errors.New("unexpected database error")
 		}
 
