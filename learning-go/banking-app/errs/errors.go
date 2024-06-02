@@ -17,10 +17,14 @@ func NewNotFoundError(message string) *AppError {
 	}
 }
 
-func NewInternalServerError(message string) *AppError {
+func NewInternalServerError(message ...string) *AppError {
 	fmt.Print("new internal server error called")
+	var msg = "internal server error"
+	if len(message) > 0 && message[0] != "" {
+		msg = message[0]
+	}
 	return &AppError{
-		Message: message,
+		Message: msg,
 		Code:    http.StatusInternalServerError,
 	}
 }
