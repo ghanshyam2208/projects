@@ -41,7 +41,16 @@ type CustomerHandlers struct {
 }
 
 func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
-	customers, err := ch.service.GetAllCustomer()
+	status := r.URL.Query().Get("status")
+	if status == "active" {
+		status = "1"
+	} else if status == "inactive" {
+		status = "0"
+	} else {
+		status = ""
+	}
+
+	customers, err := ch.service.GetAllCustomer(status)
 	// w.Header().Add("Content-Type", "application/json")
 	// json.NewEncoder(w).Encode(customers)
 	if err != nil {
