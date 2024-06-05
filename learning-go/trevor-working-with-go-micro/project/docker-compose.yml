@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  broker-services:
+    build:
+      context: ./../broker-micro
+      dockerfile: ./../broker-micro/broker-service.dockerfile
+    ports:
+      - "8002:80"
+    deploy:
+      mode: replicated
+      replicas: 1
