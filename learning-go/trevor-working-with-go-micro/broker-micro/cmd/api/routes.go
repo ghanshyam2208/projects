@@ -22,7 +22,7 @@ func (app *Config) routes() *chi.Mux {
 
 	mux.Use(middleware.Heartbeat("/ping"))
 
-	mux.Post("/", Broker)
+	mux.Post("/", app.Broker)
 
 	return mux
 }
