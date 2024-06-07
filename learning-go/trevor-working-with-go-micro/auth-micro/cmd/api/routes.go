@@ -20,5 +20,7 @@ func (app *Config) routes() *chi.Mux {
 
 	mux.Use(middleware.Heartbeat("/ping"))
 
+	mux.Post("/authenticate", app.Authenticate)
+
 	return mux
 }

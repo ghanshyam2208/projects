@@ -24,6 +24,8 @@ func (app *Config) routes() *chi.Mux {
 
 	mux.Post("/", app.Broker)
 
+	mux.Post("/handle", app.handleSubmission)
+
 	return mux
 }
 

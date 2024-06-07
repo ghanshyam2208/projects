@@ -6,9 +6,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"time"
+
+	_ "github.com/jackc/pgconn"
+	_ "github.com/jackc/pgx/v4"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 const webPort = "80"
+
+var dbCounter int64
 
 type Config struct {
 	DB     *sql.DB
@@ -16,9 +24,20 @@ type Config struct {
 }
 
 func main() {
-	app := Config{}
+	log.Println("Connecting to authentication database")
 
-	log.Printf("Starting broker service on port %s", webPort)
+	conn := connectToDB()
+
+	if conn == nil {
+		log.Panic("Not able to connect to database")
+	}
+
+	app := Config{
+		DB:     conn,
+		Models: data.New(conn),
+	}
+
+	log.Printf("Starting authentication service on port %s", webPort)
 
 	// define http server
 	srv := &http.Server{
@@ -30,5 +49,43 @@ func main() {
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)
+	}
+}
+
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("pgx", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
+func connectToDB() *sql.DB {
+	dsn := os.Getenv("DSN")
+
+	for {
+		connection, err := openDB(dsn)
+		if err != nil {
+			log.Println("Postgres not yet ready to connect....")
+			dbCounter += 1
+		} else {
+			log.Println("Connected to Postgres!")
+			return connection
+		}
+
+		if dbCounter > 10 {
+			log.Print(err)
+			return nil
+		}
+
+		log.Println("Backing off for two seconds....")
+		time.Sleep(2 * time.Second)
+		continue
 	}
 }
