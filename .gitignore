@@ -4,6 +4,7 @@ dist/
 /build
 build/
 node_modules/
+**/db-data
 
 # Logs
 logs

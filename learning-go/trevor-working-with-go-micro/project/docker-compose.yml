@@ -37,7 +37,6 @@ services:
     volumes:
       - ./db-data/postgres/:/var/lib/postgresql/data/
 
-
   pgadmin:
     image: dpage/pgadmin4:latest
     ports:
@@ -47,3 +46,14 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgres
+
+  mongo-container:
+    image: "mongo:4.2.16-bionic"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: logs
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - ./db-data/mongo/:/data/db
