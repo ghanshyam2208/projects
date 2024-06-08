@@ -11,7 +11,12 @@
     },
     {
       "path": "auth-micro"
+    },
+    {
+      "path": "logger-micro"
     }
   ],
-  "settings": {}
+  "settings": {
+    "cSpell.words": ["bson"]
+  }
 }
