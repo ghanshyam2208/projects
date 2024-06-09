@@ -1,0 +1,11 @@
+install migrate 
+https://github.com/golang-migrate/migrate/releases
+
+other useful links:
+https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
+https://github.com/golang-migrate/migrate/
+
+
+get started with migration: this will create empty files to get started with the migrations
+>migrate create -ext sql -dir db/migrations -seq init_schema
+
