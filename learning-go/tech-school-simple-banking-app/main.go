@@ -10,5 +10,4 @@ func main() {
 	if err := server.Router.Start(":8081"); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
-
 }

@@ -3,6 +3,8 @@ package api
 import (
 	"log"
 	"net/http"
+	"simple_banking_app/data"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -20,7 +22,7 @@ func NewServer() *Server {
 	}
 
 	// add routes
-	server.Router.POST("/accounts", CreateAccount)
+	server.Router.POST("/accounts", server.CreateAccount)
 
 	// Connect to the database
 	server.connectToDB()
@@ -40,7 +42,34 @@ func (s *Server) connectToDB() {
 }
 
 // handlers
-func CreateAccount(c echo.Context) error {
-	// Implement your account creation logic here
-	return c.String(http.StatusOK, "Account created")
+func (s *Server) CreateAccount(c echo.Context) error {
+	// Define a struct to receive the request data
+	type CreateAccountRequest struct {
+		Owner    string `json:"owner" validate:"required"`
+		Balance  int64  `json:"balance" validate:"required"`
+		Currency string `json:"currency" validate:"oneof=ECDSASecp256k1VerificationKey Ed25519VerificationKey RSAVerificationKey"`
+	}
+
+	var req CreateAccountRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid request payload"})
+	}
+
+	// Create an account instance
+	account := data.Accounts{
+		Owner:     req.Owner,
+		Balance:   req.Balance,
+		Currency:  req.Currency,
+		CreatedAt: time.Now(),
+	}
+
+	// Insert the account into the database
+	query := `INSERT INTO accounts (owner, balance, currency, created_at) VALUES ($1, $2, $3, $4) RETURNING id`
+	err := s.sqlClient.QueryRowx(query, account.Owner, account.Balance, account.Currency, account.CreatedAt).Scan(&account.ID)
+	if err != nil {
+		log.Println("Failed to create account:", err)
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to create account"})
+	}
+
+	return c.JSON(http.StatusOK, account)
 }
