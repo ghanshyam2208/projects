@@ -21,7 +21,7 @@ type Server struct {
 	Router          *echo.Echo
 	sqlClient       *sqlx.DB
 	serverValidator *validator.Validate
-	config          utils.Config
+	config          *utils.Config
 }
 
 func removeTrailingSlash(next echo.HandlerFunc) echo.HandlerFunc {
@@ -35,20 +35,20 @@ func removeTrailingSlash(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func NewServer() *Server {
-	server := &Server{
-		Router: echo.New(),
-	}
-
-	// Create a new validator instance
-	server.serverValidator = validator.New()
-
 	config, err := utils.LoadConfig(".")
 
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
+	server := &Server{
+		Router: echo.New(),
+		config: &config,
+	}
 
-	server.config = config
+	// Create a new validator instance
+	server.serverValidator = validator.New()
+
+	server.config = &config
 
 	log.Println("config in server:", server.config)
 	log.Println("config in server:", server.config.PostgresConnStr)

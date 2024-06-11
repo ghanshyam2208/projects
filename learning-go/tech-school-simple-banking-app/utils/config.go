@@ -6,6 +6,7 @@ import (
 
 type Config struct {
 	PostgresConnStr string `mapstructure:"PostgresConnStr"`
+	ServerAdd       string `mapstructure:"ServerAdd"`
 }
 
 func LoadConfig(path string) (Config, error) {
