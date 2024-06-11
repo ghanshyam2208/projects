@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["jmoiron", "labstack", "oneof", "Rowx", "sqlx"]
+  "cSpell.words": [
+    "jmoiron",
+    "labstack",
+    "mapstructure",
+    "oneof",
+    "Rowx",
+    "sqlx"
+  ]
 }

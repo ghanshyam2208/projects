@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"simple_banking_app/data"
+	"simple_banking_app/utils"
 	"strconv"
 	"strings"
 	"time"
@@ -20,6 +21,7 @@ type Server struct {
 	Router          *echo.Echo
 	sqlClient       *sqlx.DB
 	serverValidator *validator.Validate
+	config          utils.Config
 }
 
 func removeTrailingSlash(next echo.HandlerFunc) echo.HandlerFunc {
@@ -37,6 +39,20 @@ func NewServer() *Server {
 		Router: echo.New(),
 	}
 
+	// Create a new validator instance
+	server.serverValidator = validator.New()
+
+	config, err := utils.LoadConfig(".")
+
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
+	server.config = config
+
+	log.Println("config in server:", server.config)
+	log.Println("config in server:", server.config.PostgresConnStr)
+
 	// middleware to remove the trailing slash
 	server.Router.Use(removeTrailingSlash)
 	// add routes
@@ -46,16 +62,13 @@ func NewServer() *Server {
 
 	// Connect to the database
 	server.connectToDB()
-
-	// Create a new validator instance
-	server.serverValidator = validator.New()
-
 	return server
 }
 
 func (s *Server) connectToDB() {
+
 	// connect to db
-	sqlDb, err := sqlx.Connect("postgres", "user=postgres password=password dbname=simple_bank sslmode=disable")
+	sqlDb, err := sqlx.Connect("postgres", s.config.PostgresConnStr)
 	if err != nil {
 		log.Fatalln(err)
 	}
