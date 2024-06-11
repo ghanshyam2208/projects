@@ -14,8 +14,9 @@ import (
 )
 
 type Server struct {
-	Router    *echo.Echo
-	sqlClient *sqlx.DB
+	Router          *echo.Echo
+	sqlClient       *sqlx.DB
+	serverValidator *validator.Validate
 }
 
 func NewServer() *Server {
@@ -28,6 +29,9 @@ func NewServer() *Server {
 
 	// Connect to the database
 	server.connectToDB()
+
+	// Create a new validator instance
+	server.serverValidator = validator.New()
 
 	return server
 }
@@ -60,36 +64,11 @@ func (s *Server) CreateAccount(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	// Create a new validator instance
-	v := validator.New()
-
 	// Validate the request struct
-	err = v.Struct(createAccountRequest)
+	err = s.serverValidator.Struct(createAccountRequest)
 
 	if err != nil {
-		// Return a 422 Unprocessable Entity response with error details
-		log.Println("validation error")
-		// Get the validation errors
-		validationErrors := err.(validator.ValidationErrors)
-
-		// Create a map to store the error messages
-		errorMessages := make(map[string]string)
-
-		// Iterate over the validation errors and create a user-friendly error message
-		for _, validationError := range validationErrors {
-			field := validationError.Field()
-			tag := validationError.Tag()
-
-			switch tag {
-			case "required":
-				errorMessages[field] = fmt.Sprintf("The %s field is required", field)
-			default:
-				errorMessages[field] = fmt.Sprintf("Invalid %s", field)
-			}
-		}
-
-		// Return a 422 Unprocessable Entity response with error details
-		return c.JSON(http.StatusUnprocessableEntity, errorMessages)
+		return validationError(c, err)
 	}
 
 	// Create an account instance
@@ -109,4 +88,25 @@ func (s *Server) CreateAccount(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, account)
+}
+
+func validationError(c echo.Context, err error) error {
+	log.Println("validation error")
+	validationErrors := err.(validator.ValidationErrors)
+
+	errorMessages := make(map[string]string)
+
+	for _, validationError := range validationErrors {
+		field := validationError.Field()
+		tag := validationError.Tag()
+
+		switch tag {
+		case "required":
+			errorMessages[field] = fmt.Sprintf("The %s field is required", field)
+		default:
+			errorMessages[field] = fmt.Sprintf("Invalid %s", field)
+		}
+	}
+
+	return c.JSON(http.StatusUnprocessableEntity, errorMessages)
 }
