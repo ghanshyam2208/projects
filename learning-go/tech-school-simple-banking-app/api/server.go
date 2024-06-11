@@ -1,10 +1,13 @@
 package api
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"simple_banking_app/data"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-playground/validator"
@@ -19,13 +22,27 @@ type Server struct {
 	serverValidator *validator.Validate
 }
 
+func removeTrailingSlash(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		p := c.Request().URL.Path
+		if strings.HasSuffix(p, "/") && p != "/" {
+			c.Request().URL.Path = p[:len(p)-1]
+		}
+		return next(c)
+	}
+}
+
 func NewServer() *Server {
 	server := &Server{
 		Router: echo.New(),
 	}
 
+	// middleware to remove the trailing slash
+	server.Router.Use(removeTrailingSlash)
 	// add routes
+	server.Router.POST("/accounts/", server.CreateAccount)
 	server.Router.POST("/accounts", server.CreateAccount)
+	server.Router.GET("/accounts/:id", server.GetAccountById)
 
 	// Connect to the database
 	server.connectToDB()
@@ -45,6 +62,40 @@ func (s *Server) connectToDB() {
 
 	s.sqlClient = sqlDb
 	log.Println("Successfully connected to the database")
+}
+
+func (s *Server) GetAccountById(c echo.Context) error {
+	idParam := c.Param("id")
+	id := struct {
+		ID int `validate:"required,gt=0"`
+	}{}
+
+	id.ID, _ = strconv.Atoi(idParam)
+
+	err := s.serverValidator.Struct(id)
+	if err != nil {
+		return validationError(c, err)
+	}
+
+	// Now you can use the validated id
+	log.Println("id:", id.ID)
+
+	// Query the database for the account by ID
+	getACustomerSql := "SELECT id, owner, balance, currency, created_at from accounts WHERE id = $1"
+
+	var account data.Accounts
+	err = s.sqlClient.Get(&account, getACustomerSql, id.ID)
+	if err != nil {
+		// Handle database errors
+		if err == sql.ErrNoRows {
+			return c.String(http.StatusNotFound, "Account not found")
+		}
+		log.Println("Database error:", err)
+		return c.String(http.StatusInternalServerError, "Internal Server Error")
+	}
+
+	// Return the account as a JSON response
+	return c.JSON(http.StatusOK, account)
 }
 
 // handlers

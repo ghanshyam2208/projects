@@ -10,4 +10,7 @@ migrateup:
 migratedown:
 	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/simple_bank?sslmode=disable" -verbose down
 
+start:
+	go run main.go
+
 .PHONY: createdb
