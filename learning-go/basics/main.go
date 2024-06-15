@@ -1,14 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func main() {
-	var age int = 32
-	fmt.Println(getA(&age))
-	fmt.Println(age)
+type Person struct {
+	firstName string
+	lastName  string
 }
 
-func getA(age *int) int {
-	*age = *age - 18
-	return *age
+func main() {
+	jim := Person{
+		firstName: "Jim",
+		lastName:  "Anderson",
+	}
+	jimPointer := &jim
+	fmt.Println(jimPointer)
+	jimPointer.updateFirstName()
+	jim.printPerson()
+
+}
+
+func (pointerToPerson *Person) updateFirstName() {
+	(*pointerToPerson).firstName = "Jimmy"
+}
+
+func (p Person) printPerson() {
+	fmt.Println(p.firstName, p.lastName)
 }

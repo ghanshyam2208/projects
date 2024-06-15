@@ -7,7 +7,7 @@ import (
 
 func main() {
 	server := api.NewServer()
-	if err := server.Router.Start(":8081"); err != nil {
+	if err := server.Router.Start("0.0.0.0:8081"); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }

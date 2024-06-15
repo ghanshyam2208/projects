@@ -90,9 +90,6 @@ func (s *Server) GetAccountById(c echo.Context) error {
 		return validationError(c, err)
 	}
 
-	// Now you can use the validated id
-	log.Println("id:", id.ID)
-
 	// Query the database for the account by ID
 	getACustomerSql := "SELECT id, owner, balance, currency, created_at from accounts WHERE id = $1"
 
