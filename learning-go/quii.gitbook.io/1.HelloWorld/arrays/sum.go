@@ -1,10 +1,10 @@
 package arrays
 
-func Sum(nums [5]int) int {
+func Sum(nums []int) int {
 	// Sum function
 	var total int
-	for i := 0; i < 5; i++ {
-		total += nums[i]
+	for _, num := range nums {
+		total += num
 	}
 	return total
 }
