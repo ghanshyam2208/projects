@@ -12,20 +12,30 @@ func TestHello(t *testing.T) {
 
 	t.Run("saying hello to people", func(t *testing.T) {
 		const name = "krishna"
-		got := Hello(name)
+		got := Hello(name, "English")
 		want := englishHelloPrefix + name
 
-		if got != want {
-			assertCorrectMessage(t, got, want)
-		}
+		assertCorrectMessage(t, got, want)
 	})
 
 	t.Run("Hello world when empty string is passed", func(t *testing.T) {
-		got := Hello("")
+		got := Hello("", "English")
 		want := englishHelloPrefix + "world"
 
-		if got != want {
-			assertCorrectMessage(t, got, want)
-		}
+		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("greet in spanish ", func(t *testing.T) {
+		const name = "Elodie"
+		got := Hello(name, "Spanish")
+		want := "Hola, " + name
+		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("greet in french ", func(t *testing.T) {
+		const name = "Elodie"
+		got := Hello(name, "French")
+		want := "Bonjour, " + name
+		assertCorrectMessage(t, got, want)
 	})
 }
