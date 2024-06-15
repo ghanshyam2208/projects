@@ -1,6 +1,7 @@
 package arrays
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -27,4 +28,25 @@ func TestSum(t *testing.T) {
 		}
 	})
 
+}
+
+func TestSumAllTails(t *testing.T) {
+
+	t.Run("Sum of tails", func(t *testing.T) {
+		actual := SumAllTails([]int{2, 3}, []int{0, 9})
+		expected := []int{3, 9}
+
+		if !reflect.DeepEqual(actual, expected) {
+			t.Errorf("got %v expected %v", actual, expected)
+		}
+	})
+
+	t.Run("Sum of empty tails", func(t *testing.T) {
+		actual := SumAllTails([]int{}, []int{0, 9})
+		expected := []int{0, 9}
+
+		if !reflect.DeepEqual(actual, expected) {
+			t.Errorf("got %v expected %v", actual, expected)
+		}
+	})
 }
