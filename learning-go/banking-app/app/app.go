@@ -24,3 +24,9 @@ func Start() {
 	// starting the router
 	log.Fatal(http.ListenAndServe("localhost:8000", router))
 }
+
+// func NewCustomerHandler() CustomerHandler {
+// 	var ch CustomerHandler
+// 	ch.service = services.NewCustomerService(repositories.NewCustomerRepository())
+// 	return ch
+// }

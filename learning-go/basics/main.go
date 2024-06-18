@@ -2,29 +2,17 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 )
 
-type Person struct {
-	firstName string
-	lastName  string
-}
-
 func main() {
-	jim := Person{
-		firstName: "Jim",
-		lastName:  "Anderson",
+	resp, err := http.Get("http://google.com")
+	if err != nil {
+		fmt.Println("error: ", err)
+		os.Exit(1)
 	}
-	jimPointer := &jim
-	fmt.Println(jimPointer)
-	jimPointer.updateFirstName()
-	jim.printPerson()
 
-}
-
-func (pointerToPerson *Person) updateFirstName() {
-	(*pointerToPerson).firstName = "Jimmy"
-}
-
-func (p Person) printPerson() {
-	fmt.Println(p.firstName, p.lastName)
+	file, err := os.Open("example.txt")
+	file.Read()
 }
