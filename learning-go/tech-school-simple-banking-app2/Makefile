@@ -11,6 +11,6 @@ migratedown:
 	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/simple-bank?sslmode=disable" -verbose down
 
 start:
-	go run main.go
+	go run ./cmd/api
 
 .PHONY: createdb
