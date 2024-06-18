@@ -12,7 +12,7 @@ type CustomerHandler struct {
 	Service services.CustomerService
 }
 
-func (ch *CustomerHandler) getAllCustomers(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, err := ch.Service.GetAllCustomers()
 
 	if err != nil {

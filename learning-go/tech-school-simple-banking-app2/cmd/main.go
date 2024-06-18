@@ -21,8 +21,8 @@ func main() {
 
 	// Set up the router and define the routes
 	router := mux.NewRouter()
-	router.HandleFunc("/customers", customerHandler.Service.GetAllCustomers).Methods(http.MethodGet)
+	router.HandleFunc("/customers", customerHandler.GetAllCustomers).Methods(http.MethodGet)
 
 	// Start the server
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8082", router)
 }
