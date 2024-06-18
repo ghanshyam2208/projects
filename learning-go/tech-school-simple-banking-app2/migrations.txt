@@ -1,0 +1,6 @@
+create dir
+mkdir -p db/migrations
+
+initial command:
+migrate create -ext sql -dir db/migrations -seq init_schema
+
