@@ -30,7 +30,7 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      err.Code,
-			ErrorInfo: err.AsMessage(),
+			ErrorInfo: err.AsMessage().Message,
 		})
 	}
 
@@ -76,7 +76,7 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 			Error:     true,
 			Code:      http.StatusBadRequest,
 			ErrorInfo: err.Error(),
-			ErrorData: err,
+			ErrorData: validationError(ctx, err),
 		})
 	}
 
@@ -87,7 +87,7 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      http.StatusInternalServerError,
-			ErrorInfo: customErr.AsMessage(),
+			ErrorInfo: customErr.AsMessage().Message,
 		})
 	}
 
@@ -117,11 +117,11 @@ func (s *Server) AttachAccountRouters() {
 	accountRoutesGroup.POST("", accountHandler.CreateAccount)
 }
 
-func validationError(c echo.Context, err error) map[string]string {
+func validationError(c echo.Context, err error) map[string]interface{} {
 	log.Println("validation error")
 	validationErrors := err.(validator.ValidationErrors)
 
-	errorMessages := make(map[string]string)
+	errorMessages := make(map[string]interface{})
 
 	for _, validationError := range validationErrors {
 		field := strings.ToLower(validationError.Field()) // Convert field to lowercase

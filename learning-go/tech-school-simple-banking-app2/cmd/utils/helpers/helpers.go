@@ -14,10 +14,10 @@ type SuccessApiResponse struct {
 }
 
 type ErrorApiResponse struct {
-	Error     bool        `json:"error"`
-	Code      int         `json:"code"`
-	ErrorInfo interface{} `json:"errorInfo"`
-	ErrorData interface{} `json:"errorData"`
+	Error     bool                   `json:"error"`
+	Code      int                    `json:"code"`
+	ErrorInfo string                 `json:"errorInfo"`
+	ErrorData map[string]interface{} `json:"errorData"`
 }
 
 func WriteSuccessApiResponse(ctx echo.Context, response SuccessApiResponse) error {
