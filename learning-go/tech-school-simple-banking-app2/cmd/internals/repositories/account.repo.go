@@ -28,7 +28,7 @@ func (d *AccountRepositoryDB) connectDB() {
 	sqlDb, err := sqlx.Connect("postgres", "postgresql://root:root@localhost:5432/simple-bank?sslmode=disable")
 	if err != nil {
 		logger.Error("Error while connecting to database: " + err.Error())
-		panic(err)
+		// panic(err) // this will stop the server, as of now lets not stop server if not able to connect to the server
 	}
 	d.sqlxClient = sqlDb
 	logger.Info("Successfully connected to the database")

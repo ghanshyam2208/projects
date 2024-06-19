@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"banking_app2/cmd/internals/dto"
 	"banking_app2/cmd/utils/errs"
 	"time"
 )
@@ -15,4 +16,14 @@ type Account struct {
 
 type IAccountRepository interface {
 	GetAllAccounts() ([]Account, *errs.AppError)
+}
+
+func (a Account) CreateAccountResponse() dto.AccountDto {
+	return dto.AccountDto{
+		Id:        a.Id,
+		Owner:     a.Owner,
+		Balance:   a.Balance,
+		Currency:  a.Currency,
+		CreatedAt: a.CreatedAt,
+	}
 }

@@ -17,10 +17,12 @@ type AccountHandlers struct {
 func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 	accounts, err := r.service.GetAllAccounts()
 	if err != nil {
-		return h.WriteApiResponse(ctx, http.StatusOK, err.AsMessage())
+		return h.WriteApiErrorResponse(ctx, http.StatusOK, err.AsMessage())
 	}
 
-	return h.WriteApiResponse(ctx, http.StatusOK, accounts)
+	return h.WriteApiResponse(ctx, http.StatusOK, map[string]any{
+		"accounts": accounts,
+	})
 }
 
 func (s *Server) AttachAccountRouters() {

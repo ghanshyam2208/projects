@@ -1,20 +1,30 @@
 package services
 
 import (
+	"banking_app2/cmd/internals/dto"
 	"banking_app2/cmd/internals/repositories"
 	"banking_app2/cmd/utils/errs"
 )
 
 type IAccountService interface {
-	GetAllAccounts() ([]repositories.Account, *errs.AppError)
+	GetAllAccounts() ([]dto.AccountDto, *errs.AppError)
 }
 
 type AccountService struct {
 	repo repositories.IAccountRepository
 }
 
-func (cs AccountService) GetAllAccounts() ([]repositories.Account, *errs.AppError) {
-	return cs.repo.GetAllAccounts()
+func (cs AccountService) GetAllAccounts() ([]dto.AccountDto, *errs.AppError) {
+	repoAccounts, err := cs.repo.GetAllAccounts()
+	if err != nil {
+		return nil, err
+	}
+	response := make([]dto.AccountDto, 0)
+	for _, account := range repoAccounts {
+		response = append(response, account.CreateAccountResponse())
+	}
+
+	return response, nil
 }
 
 func NewAccountService(repository repositories.IAccountRepository) *AccountService {

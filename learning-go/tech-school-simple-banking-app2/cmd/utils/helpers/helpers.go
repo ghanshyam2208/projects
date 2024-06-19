@@ -13,3 +13,11 @@ func WriteApiResponse(ctx echo.Context, code int, data interface{}) error {
 		"data":  data,
 	})
 }
+
+func WriteApiErrorResponse(ctx echo.Context, code int, data interface{}) error {
+	return ctx.JSON(code, apiResponse{
+		"error": true,
+		"code":  code,
+		"data":  data,
+	})
+}
