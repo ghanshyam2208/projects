@@ -11,7 +11,7 @@ import (
 )
 
 type AccountHandlers struct {
-	service services.ICustomerService
+	service services.IAccountService
 }
 
 func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
@@ -27,7 +27,7 @@ func (s *Server) AttachAccountRouters() {
 	// Create a group for /accounts
 	accountRoutesGroup := s.Router.Group("/accounts")
 
-	accountHandlerObj := &AccountHandlers{service: services.NewCustomerService(repositories.NewAccountsRepo())}
+	accountHandlerObj := &AccountHandlers{service: services.NewAccountService(repositories.NewAccountsRepo())}
 
 	// attach accounts routes to this group
 	accountRoutesGroup.GET("/", accountHandlerObj.GetAllAccounts)
