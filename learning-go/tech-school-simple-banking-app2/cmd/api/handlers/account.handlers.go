@@ -9,6 +9,7 @@ import (
 	"banking_app2/cmd/internals/repositories"
 	"banking_app2/cmd/internals/services"
 	h "banking_app2/cmd/utils/helpers"
+	"banking_app2/cmd/utils/logger"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo"
@@ -22,11 +23,18 @@ type AccountHandlers struct {
 func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 	accounts, err := r.service.GetAllAccounts()
 	if err != nil {
-		return h.WriteApiErrorResponse(ctx, err.Code, err.Message, err.AsMessage())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      err.Code,
+			ErrorInfo: err.AsMessage(),
+		})
 	}
 
-	return h.WriteApiResponse(ctx, http.StatusOK, map[string]any{
-		"accounts": accounts,
+	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
+		Error:   false,
+		Code:    http.StatusOK,
+		Data:    accounts,
+		Message: "accounts fetched successfully",
 	})
 }
 
@@ -42,21 +50,35 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 	err := ctx.Bind(&createAccountRequest)
 
 	if err != nil {
-		log.Println("bad request error")
-		return h.WriteApiErrorResponse(ctx, http.StatusOK, "binding failed", map[string]any{
-			"msg": "binding failed issue",
+		logger.Error("binding request failed " + err.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: err.Error(),
 		})
+		// return h.WriteApiErrorResponse(ctx, http.StatusOK, "binding failed", map[string]any{
+		// 	"msg": "binding failed issue",
+		// })
 	}
 
 	// Validate the request struct
 	err = r.validator.Struct(&createAccountRequest)
 
 	if err != nil {
-		return h.WriteApiErrorResponse(ctx, http.StatusOK, "validation failed", validationError(ctx, err))
+		// return h.WriteApiErrorResponse(ctx, http.StatusOK, "validation failed", validationError(ctx, err))
+		logger.Error("validation failed " + err.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: err.Error(),
+		})
 	}
 
-	return h.WriteApiResponse(ctx, http.StatusOK, map[string]string{
-		"message": "passed",
+	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
+		Error:   false,
+		Code:    http.StatusOK,
+		Data:    make(map[string]string),
+		Message: "local test",
 	})
 
 }

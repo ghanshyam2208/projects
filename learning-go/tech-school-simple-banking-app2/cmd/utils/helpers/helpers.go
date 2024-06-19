@@ -6,19 +6,23 @@ import (
 
 type apiResponse map[string]any
 
-func WriteApiResponse(ctx echo.Context, code int, data interface{}) error {
-	return ctx.JSON(code, apiResponse{
-		"error": false,
-		"code":  code,
-		"data":  data,
-	})
+type SuccessApiResponse struct {
+	Error   bool        `json:"error"`
+	Code    int         `json:"code"`
+	Data    interface{} `json:"data"`
+	Message string      `json:"message"`
 }
 
-func WriteApiErrorResponse(ctx echo.Context, code int, errorMsg string, data interface{}) error {
-	return ctx.JSON(code, apiResponse{
-		"error":    true,
-		"errorMsg": errorMsg,
-		"code":     code,
-		"data":     data,
-	})
+type ErrorApiResponse struct {
+	Error     bool        `json:"error"`
+	Code      int         `json:"code"`
+	ErrorInfo interface{} `json:"errorInfo"`
+}
+
+func WriteSuccessApiResponse(ctx echo.Context, response SuccessApiResponse) error {
+	return ctx.JSON(response.Code, response)
+}
+
+func WriteErrorApiResponse(ctx echo.Context, response ErrorApiResponse) error {
+	return ctx.JSON(response.Code, response)
 }

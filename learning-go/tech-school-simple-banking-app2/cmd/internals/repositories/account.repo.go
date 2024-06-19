@@ -18,7 +18,7 @@ func (d *AccountRepositoryDB) GetAllAccounts() ([]Account, *errs.AppError) {
 	err := d.sqlxClient.Select(&accounts, query)
 	if err != nil {
 		logger.Error("Error while getting all accounts: " + err.Error())
-		return nil, errs.NewInternalServerError()
+		return nil, errs.NewInternalServerError("Error while getting all accounts: " + err.Error())
 	}
 	return accounts, nil
 }
