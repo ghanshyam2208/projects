@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"banking_app2/cmd/internals/dto"
 	"banking_app2/cmd/internals/repositories"
 	"banking_app2/cmd/internals/services"
 	h "banking_app2/cmd/utils/helpers"
@@ -30,23 +31,22 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 		})
 	}
 
+	returnData := map[string]interface{}{} // map with keys string, value is any, last {} for initialization
+	if len(accounts) > 0 {
+		returnData["accounts"] = accounts
+	} else {
+		returnData["accounts"] = map[string]interface{}{}
+	}
 	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
 		Error:   false,
 		Code:    http.StatusOK,
-		Data:    accounts,
+		Data:    returnData,
 		Message: "accounts fetched successfully",
 	})
 }
 
 func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
-	// Define a struct to receive the request data
-	type CreateAccountRequest struct {
-		Owner    string `json:"owner" validate:"required"`
-		Balance  int64  `json:"balance"`
-		Currency string `json:"currency" validate:"required,oneof=USD INR EUR AUS JPY GBD"`
-	}
-
-	var createAccountRequest CreateAccountRequest
+	var createAccountRequest dto.CreateAccountDto
 	err := ctx.Bind(&createAccountRequest)
 
 	if err != nil {
@@ -56,16 +56,12 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 			Code:      http.StatusBadRequest,
 			ErrorInfo: err.Error(),
 		})
-		// return h.WriteApiErrorResponse(ctx, http.StatusOK, "binding failed", map[string]any{
-		// 	"msg": "binding failed issue",
-		// })
 	}
 
 	// Validate the request struct
 	err = r.validator.Struct(&createAccountRequest)
 
 	if err != nil {
-		// return h.WriteApiErrorResponse(ctx, http.StatusOK, "validation failed", validationError(ctx, err))
 		logger.Error("validation failed " + err.Error())
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
@@ -77,7 +73,7 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
 		Error:   false,
 		Code:    http.StatusOK,
-		Data:    make(map[string]string),
+		Data:    make(map[string]interface{}),
 		Message: "local test",
 	})
 

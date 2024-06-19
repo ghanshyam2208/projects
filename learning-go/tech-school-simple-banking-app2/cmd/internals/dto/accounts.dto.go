@@ -19,3 +19,10 @@ type SuccessFullApiResponseDto struct {
 	code int
 	data interface{}
 }
+
+// Define a struct to receive the request data
+type CreateAccountDto struct {
+	Owner    string `json:"owner" validate:"required"`
+	Balance  int64  `json:"balance"`
+	Currency string `json:"currency" validate:"required,oneof=USD INR EUR AUS JPY GBD"`
+}
