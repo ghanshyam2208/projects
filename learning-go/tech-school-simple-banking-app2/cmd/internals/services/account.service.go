@@ -7,7 +7,7 @@ import (
 )
 
 type IAccountService interface {
-	GetAllAccounts() ([]dto.AccountDto, *errs.AppError)
+	GetAllAccounts(int, int) ([]dto.AccountDto, *errs.AppError)
 	CreateAccount(dto.CreateAccountDto) (dto.AccountDto, *errs.AppError)
 }
 
@@ -15,8 +15,8 @@ type AccountService struct {
 	repo repositories.IAccountRepository
 }
 
-func (cs AccountService) GetAllAccounts() ([]dto.AccountDto, *errs.AppError) {
-	repoAccounts, err := cs.repo.GetAllAccounts()
+func (cs AccountService) GetAllAccounts(page int, pageSize int) ([]dto.AccountDto, *errs.AppError) {
+	repoAccounts, err := cs.repo.GetAllAccounts(page, pageSize)
 	if err != nil {
 		return nil, err
 	}

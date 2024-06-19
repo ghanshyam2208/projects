@@ -15,7 +15,7 @@ type Account struct {
 }
 
 type IAccountRepository interface {
-	GetAllAccounts() ([]Account, *errs.AppError)
+	GetAllAccounts(int, int) ([]Account, *errs.AppError)
 	CreateAccount(dto.CreateAccountDto) (*Account, *errs.AppError)
 }
 

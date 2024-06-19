@@ -14,10 +14,11 @@ type AccountRepositoryDB struct {
 	sqlxClient *sqlx.DB
 }
 
-func (d *AccountRepositoryDB) GetAllAccounts() ([]Account, *errs.AppError) {
+func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account, *errs.AppError) {
 	accounts := []Account{}
-	query := "SELECT id, owner, balance, currency, created_at FROM accounts"
-	err := d.sqlxClient.Select(&accounts, query)
+	offset := (page - 1) * pageSize
+	query := "SELECT id, owner, balance, currency, created_at FROM accounts ORDER BY id LIMIT $1 OFFSET $2"
+	err := d.sqlxClient.Select(&accounts, query, pageSize, offset)
 	if err != nil {
 		logger.Error("Error while getting all accounts: " + err.Error())
 		return nil, errs.NewInternalServerError("Error while getting all accounts: " + err.Error())

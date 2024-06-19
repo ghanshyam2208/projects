@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"banking_app2/cmd/internals/dto"
@@ -22,7 +23,9 @@ type AccountHandlers struct {
 }
 
 func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
-	accounts, err := r.service.GetAllAccounts()
+	page, _ := strconv.Atoi(ctx.QueryParam("page"))
+	pageSize, _ := strconv.Atoi(ctx.QueryParam("pageSize"))
+	accounts, err := r.service.GetAllAccounts(page, pageSize)
 	if err != nil {
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
