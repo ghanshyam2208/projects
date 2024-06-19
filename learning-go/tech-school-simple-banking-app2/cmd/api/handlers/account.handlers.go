@@ -97,7 +97,7 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 		Data: map[string]interface{}{
 			"account": account,
 		},
-		Message: "local test",
+		Message: "account created successfully",
 	})
 
 }
