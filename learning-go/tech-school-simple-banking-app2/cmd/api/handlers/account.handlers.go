@@ -25,12 +25,19 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 	})
 }
 
+func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
+	return h.WriteApiResponse(ctx, http.StatusOK, map[string]string{
+		"message": "passed",
+	})
+}
+
 func (s *Server) AttachAccountRouters() {
 	// Create a group for /accounts
 	accountRoutesGroup := s.Router.Group("/accounts")
 
-	accountHandlerObj := &AccountHandlers{service: services.NewAccountService(repositories.NewAccountsRepo())}
+	accountHandler := &AccountHandlers{service: services.NewAccountService(repositories.NewAccountsRepo())}
 
 	// attach accounts routes to this group
-	accountRoutesGroup.GET("/", accountHandlerObj.GetAllAccounts)
+	accountRoutesGroup.GET("", accountHandler.GetAllAccounts)
+	accountRoutesGroup.POST("", accountHandler.CreateAccount)
 }
