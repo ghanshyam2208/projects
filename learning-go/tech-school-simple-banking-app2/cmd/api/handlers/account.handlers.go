@@ -102,6 +102,52 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 
 }
 
+func (r *AccountHandlers) UpdateAccountHandler(ctx echo.Context) error {
+	var updateAccountRequest dto.UpdateAccountDto
+	err := ctx.Bind(&updateAccountRequest)
+
+	if err != nil {
+		logger.Error("binding request failed " + err.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: err.Error(),
+		})
+	}
+
+	// Validate the request struct
+	err = r.validator.Struct(&updateAccountRequest)
+
+	if err != nil {
+		logger.Error("validation failed " + err.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: err.Error(),
+			ErrorData: validationError(ctx, err),
+		})
+	}
+
+	customErr := r.service.UpdateAccount(updateAccountRequest)
+	if customErr != nil {
+		logger.Error(customErr.Message)
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusInternalServerError,
+			ErrorInfo: customErr.AsMessage().Message,
+		})
+	}
+
+	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
+		Error: false,
+		Code:  http.StatusOK,
+		Data: map[string]interface{}{
+			"account": "",
+		},
+		Message: "account updated successfully",
+	})
+}
+
 func (s *Server) AttachAccountRouters() {
 	// Create a group for /accounts
 	accountRoutesGroup := s.Router.Group("/accounts")
@@ -115,6 +161,7 @@ func (s *Server) AttachAccountRouters() {
 	// attach accounts routes to this group
 	accountRoutesGroup.GET("", accountHandler.GetAllAccounts)
 	accountRoutesGroup.POST("", accountHandler.CreateAccount)
+	accountRoutesGroup.PATCH("", accountHandler.UpdateAccountHandler)
 }
 
 func validationError(c echo.Context, err error) map[string]interface{} {

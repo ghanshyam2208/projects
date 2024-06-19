@@ -26,3 +26,10 @@ type CreateAccountDto struct {
 	Balance  int64  `json:"balance"`
 	Currency string `json:"currency" validate:"required,oneof=USD INR EUR AUS JPY GBP"`
 }
+
+type UpdateAccountDto struct {
+	Id       int64   `json:"id" validate:"required"`
+	Owner    *string // Pointers to handle optional field
+	Currency *string
+	Balance  *int64
+}

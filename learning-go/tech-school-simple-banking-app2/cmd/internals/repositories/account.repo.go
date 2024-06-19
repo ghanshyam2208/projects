@@ -4,6 +4,8 @@ import (
 	"banking_app2/cmd/internals/dto"
 	"banking_app2/cmd/utils/errs"
 	"banking_app2/cmd/utils/logger"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -61,4 +63,50 @@ func (d *AccountRepositoryDB) CreateAccount(createAccountDto dto.CreateAccountDt
 	}
 
 	return &account, nil
+}
+
+func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.UpdateAccountDto) *errs.AppError {
+	var query strings.Builder
+	var args []interface{}
+
+	query.WriteString("UPDATE accounts SET ")
+
+	// Add each field conditionally to the set clause and args slice
+	var setClauses []string
+
+	if updateAccountDto.Owner != nil {
+		setClauses = append(setClauses, "owner = $1")
+		args = append(args, *updateAccountDto.Owner)
+	}
+	if updateAccountDto.Currency != nil {
+		setClauses = append(setClauses, "currency = $2")
+		args = append(args, *updateAccountDto.Currency)
+	}
+	if updateAccountDto.Balance != nil {
+		setClauses = append(setClauses, "balance = $3")
+		args = append(args, *updateAccountDto.Balance)
+	}
+
+	// Join the set clauses with commas
+	if len(setClauses) == 0 {
+		return errs.NewInternalServerError("No fields to update")
+	}
+
+	query.WriteString(strings.Join(setClauses, ", "))
+	query.WriteString(" WHERE id = $4")
+	args = append(args, id)
+
+	queryString := query.String()
+	logger.Debug("query: " + queryString)
+	fmt.Println(queryString)
+	fmt.Println(args...)
+
+	// Execute the update query
+	_, stdErr := d.sqlxClient.Exec(queryString, args...)
+	if stdErr != nil {
+		logger.Error("Error while updating account: " + stdErr.Error())
+		return errs.NewInternalServerError("Error while updating account: " + stdErr.Error())
+	}
+
+	return nil
 }

@@ -9,6 +9,7 @@ import (
 type IAccountService interface {
 	GetAllAccounts(int, int) ([]dto.AccountDto, *errs.AppError)
 	CreateAccount(dto.CreateAccountDto) (dto.AccountDto, *errs.AppError)
+	UpdateAccount(dto.UpdateAccountDto) *errs.AppError
 }
 
 type AccountService struct {
@@ -34,6 +35,10 @@ func (cs AccountService) CreateAccount(createAccountDto dto.CreateAccountDto) (d
 		return dto.AccountDto{}, err
 	}
 	return account.CreateAccountResponse(), nil
+}
+
+func (cs AccountService) UpdateAccount(updateAccountDto dto.UpdateAccountDto) *errs.AppError {
+	return cs.repo.UpdateAccount(updateAccountDto.Id, updateAccountDto)
 }
 
 func NewAccountService(repository repositories.IAccountRepository) *AccountService {
