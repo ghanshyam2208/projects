@@ -31,11 +31,17 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 		})
 	}
 
-	returnData := map[string]interface{}{} // map with keys string, value is any, last {} for initialization
+	// returnData := map[string]interface{}{} // map with keys string, value is any, last {} for initialization
+	// returnData := map[string]interface{}{
+	// 	"accounts": []repositories.Account{}, // Initialize with an empty slice
+	// }
+
+	// using make
+	returnData := make(map[string]interface{})
+	returnData["accounts"] = make([]repositories.Account, 0)
+
 	if len(accounts) > 0 {
 		returnData["accounts"] = accounts
-	} else {
-		returnData["accounts"] = map[string]interface{}{}
 	}
 	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
 		Error:   false,
