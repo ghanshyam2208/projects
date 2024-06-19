@@ -17,5 +17,9 @@ func SampleResponse(ctx echo.Context) error {
 }
 
 func (s *Server) AttachAccountRouters() {
-	s.Router.GET("/", SampleResponse)
+	// Create a group for /accounts
+	accountRoutesGroup := s.Router.Group("/accounts")
+
+	// attach accounts routes to this group
+	accountRoutesGroup.GET("/", SampleResponse)
 }
