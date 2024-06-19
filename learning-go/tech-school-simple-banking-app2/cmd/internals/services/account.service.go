@@ -8,6 +8,7 @@ import (
 
 type IAccountService interface {
 	GetAllAccounts() ([]dto.AccountDto, *errs.AppError)
+	CreateAccount(dto.CreateAccountDto) (dto.AccountDto, *errs.AppError)
 }
 
 type AccountService struct {
@@ -25,6 +26,14 @@ func (cs AccountService) GetAllAccounts() ([]dto.AccountDto, *errs.AppError) {
 	}
 
 	return response, nil
+}
+
+func (cs AccountService) CreateAccount(createAccountDto dto.CreateAccountDto) (dto.AccountDto, *errs.AppError) {
+	account, err := cs.repo.CreateAccount(createAccountDto)
+	if err != nil {
+		return dto.AccountDto{}, err
+	}
+	return account.CreateAccountResponse(), nil
 }
 
 func NewAccountService(repository repositories.IAccountRepository) *AccountService {

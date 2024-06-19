@@ -73,13 +73,27 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 			Error:     true,
 			Code:      http.StatusBadRequest,
 			ErrorInfo: err.Error(),
+			ErrorData: err,
+		})
+	}
+
+	// call service
+	account, customErr := r.service.CreateAccount(createAccountRequest)
+	if customErr != nil {
+		logger.Error(customErr.Message)
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusInternalServerError,
+			ErrorInfo: customErr.AsMessage(),
 		})
 	}
 
 	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
-		Error:   false,
-		Code:    http.StatusOK,
-		Data:    make(map[string]interface{}),
+		Error: false,
+		Code:  http.StatusOK,
+		Data: map[string]interface{}{
+			"account": account,
+		},
 		Message: "local test",
 	})
 

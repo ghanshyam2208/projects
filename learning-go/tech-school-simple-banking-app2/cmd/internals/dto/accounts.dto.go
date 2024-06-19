@@ -24,5 +24,5 @@ type SuccessFullApiResponseDto struct {
 type CreateAccountDto struct {
 	Owner    string `json:"owner" validate:"required"`
 	Balance  int64  `json:"balance"`
-	Currency string `json:"currency" validate:"required,oneof=USD INR EUR AUS JPY GBD"`
+	Currency string `json:"currency" validate:"required,oneof=USD INR EUR AUS JPY GBP"`
 }
