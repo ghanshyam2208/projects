@@ -110,3 +110,14 @@ func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.Updat
 
 	return nil
 }
+
+func (d *AccountRepositoryDB) DeleteAccount(id int64) *errs.AppError {
+	query := "DELETE FROM accounts WHERE id = $1"
+	_, stdErr := d.sqlxClient.Exec(query, id)
+	if stdErr != nil {
+		logger.Error("Error while deleting account: " + stdErr.Error())
+		return errs.NewInternalServerError("Error while deleting account: " + stdErr.Error())
+	}
+
+	return nil
+}

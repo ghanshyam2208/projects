@@ -18,6 +18,7 @@ type IAccountRepository interface {
 	GetAllAccounts(int, int) ([]Account, *errs.AppError)
 	CreateAccount(dto.CreateAccountDto) (*Account, *errs.AppError)
 	UpdateAccount(int64, dto.UpdateAccountDto) *errs.AppError
+	DeleteAccount(int64) *errs.AppError
 }
 
 func (a Account) CreateAccountResponse() dto.AccountDto {
