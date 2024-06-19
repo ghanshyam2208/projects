@@ -18,6 +18,7 @@ func Start() {
 
 	srv.Router.HideBanner = true
 	srv.Router.Use(removeTrailingSlash)
+
 	srv.AttachAccountRouters()
 	if err := srv.Router.Start("0.0.0.0:8081"); err != nil {
 		logger.Error("Could not start the server " + err.Error())

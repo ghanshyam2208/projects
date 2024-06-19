@@ -17,3 +17,9 @@ func NewInternalServerError(messages ...string) *AppError {
 		Message: msg,
 	}
 }
+
+func (e AppError) AsMessage() *AppError {
+	return &AppError{
+		Message: e.Message,
+	}
+}
