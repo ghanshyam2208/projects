@@ -23,3 +23,13 @@ func (e AppError) AsMessage() *AppError {
 		Message: e.Message,
 	}
 }
+
+func FromError(err error) *AppError {
+	if err == nil {
+		return nil
+	}
+	return &AppError{
+		Code:    http.StatusInternalServerError,
+		Message: err.Error(),
+	}
+}

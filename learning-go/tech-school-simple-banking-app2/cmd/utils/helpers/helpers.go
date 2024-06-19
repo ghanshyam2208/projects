@@ -14,10 +14,11 @@ func WriteApiResponse(ctx echo.Context, code int, data interface{}) error {
 	})
 }
 
-func WriteApiErrorResponse(ctx echo.Context, code int, data interface{}) error {
+func WriteApiErrorResponse(ctx echo.Context, code int, errorMsg string, data interface{}) error {
 	return ctx.JSON(code, apiResponse{
-		"error": true,
-		"code":  code,
-		"data":  data,
+		"error":    true,
+		"errorMsg": errorMsg,
+		"code":     code,
+		"data":     data,
 	})
 }
