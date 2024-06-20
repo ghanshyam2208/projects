@@ -12,8 +12,33 @@ import (
 )
 
 func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
-	page, _ := strconv.Atoi(ctx.QueryParam("page"))
-	pageSize, _ := strconv.Atoi(ctx.QueryParam("pageSize"))
+	page, stdErr := strconv.Atoi(ctx.QueryParam("page"))
+	if stdErr != nil {
+		logger.Error("validation failed " + stdErr.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: stdErr.Error(),
+		})
+	}
+	pageSize, stdErr := strconv.Atoi(ctx.QueryParam("pageSize"))
+	if stdErr != nil {
+		logger.Error("validation failed " + stdErr.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: stdErr.Error(),
+		})
+	}
+	if page < 1 || pageSize != 10 {
+		logger.Error("validation failed for page and pageSize ")
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: "page must 1 or pageSize must be 10",
+		})
+	}
+
 	accounts, err := r.service.GetAllAccounts(page, pageSize)
 	if err != nil {
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
@@ -58,15 +83,8 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 
 	// Validate the request struct
 	err = r.validator.Struct(&createAccountRequest)
-
 	if err != nil {
-		logger.Error("validation failed " + err.Error())
-		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
-			Error:     true,
-			Code:      http.StatusBadRequest,
-			ErrorInfo: err.Error(),
-			ErrorData: validationError(ctx, err),
-		})
+		return handleValidationError(ctx, err)
 	}
 
 	// call service
@@ -108,13 +126,7 @@ func (r *AccountHandlers) UpdateAccountHandler(ctx echo.Context) error {
 	err = r.validator.Struct(&updateAccountRequest)
 
 	if err != nil {
-		logger.Error("validation failed " + err.Error())
-		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
-			Error:     true,
-			Code:      http.StatusBadRequest,
-			ErrorInfo: err.Error(),
-			ErrorData: validationError(ctx, err),
-		})
+		return handleValidationError(ctx, err)
 	}
 
 	customErr := r.service.UpdateAccount(updateAccountRequest)
@@ -139,7 +151,7 @@ func (r *AccountHandlers) UpdateAccountHandler(ctx echo.Context) error {
 
 func (r *AccountHandlers) DeleteAccount(ctx echo.Context) error {
 	type DeleteAccountDto struct {
-		Id int64 `json:"id"`
+		Id int64 `json:"id"  validate:"required"`
 	}
 	var deleteAccountDto DeleteAccountDto
 	stdErr := ctx.Bind(&deleteAccountDto)
@@ -154,15 +166,8 @@ func (r *AccountHandlers) DeleteAccount(ctx echo.Context) error {
 
 	// Validate the request struct
 	stdErr = r.validator.Struct(&deleteAccountDto)
-
 	if stdErr != nil {
-		logger.Error("validation failed " + stdErr.Error())
-		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
-			Error:     true,
-			Code:      http.StatusBadRequest,
-			ErrorInfo: stdErr.Error(),
-			ErrorData: validationError(ctx, stdErr),
-		})
+		return handleValidationError(ctx, stdErr)
 	}
 	customErr := r.service.DeleteAccount(deleteAccountDto.Id)
 	if customErr != nil {
@@ -181,5 +186,15 @@ func (r *AccountHandlers) DeleteAccount(ctx echo.Context) error {
 			"account": "",
 		},
 		Message: "account deleted successfully",
+	})
+}
+
+func handleValidationError(ctx echo.Context, stdErr error) error { // error is standard error
+	logger.Error("validation failed " + stdErr.Error())
+	return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+		Error:     true,
+		Code:      http.StatusBadRequest,
+		ErrorInfo: stdErr.Error(),
+		ErrorData: validationError(ctx, stdErr),
 	})
 }
