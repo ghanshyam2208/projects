@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"banking_app2/cmd/internals/dto"
+	"banking_app2/cmd/utils/configs"
 	"banking_app2/cmd/utils/logger"
 	"errors"
 	"fmt"
@@ -14,6 +15,7 @@ import (
 
 type AccountRepositoryDB struct {
 	sqlxClient *sqlx.DB
+	appConfigs *configs.Config
 }
 
 func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account, error) {
@@ -30,7 +32,7 @@ func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account,
 
 func (d *AccountRepositoryDB) connectDB() {
 	// connect to database
-	sqlDb, err := sqlx.Connect("postgres", "postgresql://root:root@localhost:5432/simple-bank?sslmode=disable")
+	sqlDb, err := sqlx.Connect("postgres", d.appConfigs.PostgresConnStr)
 	if err != nil {
 		logger.Error("Error while connecting to database: " + err.Error())
 		// panic(err) // this will stop the server, as of now lets not stop server if not able to connect to the server
@@ -39,8 +41,10 @@ func (d *AccountRepositoryDB) connectDB() {
 	logger.Info("Successfully connected to the database")
 }
 
-func NewAccountsRepo() *AccountRepositoryDB {
-	repo := &AccountRepositoryDB{}
+func NewAccountsRepo(configs *configs.Config) *AccountRepositoryDB {
+	repo := &AccountRepositoryDB{
+		appConfigs: configs,
+	}
 	repo.connectDB()
 	return repo
 }

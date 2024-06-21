@@ -22,7 +22,7 @@ func (s *Server) AttachAccountRouters() {
 	accountRoutesGroup := s.Router.Group("/accounts")
 
 	// initiate handler
-	accountHandler := &AccountHandlers{service: services.NewAccountService(repositories.NewAccountsRepo())}
+	accountHandler := &AccountHandlers{service: services.NewAccountService(repositories.NewAccountsRepo(s.appConfigs))}
 
 	// initiate validator
 	accountHandler.validator = validator.New()

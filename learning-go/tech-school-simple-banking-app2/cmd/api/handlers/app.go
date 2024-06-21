@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"banking_app2/cmd/utils/configs"
 	"banking_app2/cmd/utils/errs"
 	"banking_app2/cmd/utils/logger"
+	"os"
 	"strings"
 
 	"github.com/labstack/echo"
@@ -10,18 +12,33 @@ import (
 
 // Server struct represents the web server
 type Server struct {
-	Router *echo.Echo
+	Router     *echo.Echo
+	appConfigs *configs.Config
 }
 
 func Start() {
 	srv := NewServer()
+
+	rootDir, stdErr := os.Getwd()
+	if stdErr != nil {
+		logger.Error("could not load root dir " + stdErr.Error())
+	}
+
+	config, stdErr := configs.LoadConfig(rootDir)
+
+	if stdErr != nil {
+		logger.Error("could not load configs " + stdErr.Error())
+	}
+	// Initialize your app with the config
+	srv.appConfigs = config
 
 	srv.Router.HideBanner = true
 
 	srv.Router.Use(removeTrailingSlash) // TODO: this is not working needs debugging
 	srv.AttachAccountRouters()
 
-	if err := srv.Router.Start("0.0.0.0:8081"); err != nil {
+	logger.Info("Starting the server at " + srv.appConfigs.ServerAdd)
+	if err := srv.Router.Start(srv.appConfigs.ServerAdd); err != nil {
 		logger.Error("Could not start the server " + err.Error())
 		errs.NewInternalServerError(err.Error())
 		panic(err)
