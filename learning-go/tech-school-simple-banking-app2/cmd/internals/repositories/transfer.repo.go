@@ -63,13 +63,21 @@ func (t *TransferRepositoryDb) TransferAmount(payload dto.TransferAmountDto) (*T
 		return nil, stdErr
 	}
 
-	return &Transfer{
-		Id:            1,
+	transfer := Transfer{
 		FromAccountId: payload.FromAccountId,
 		ToAccountId:   payload.ToAccountId,
 		Amount:        payload.Amount,
 		CreatedAt:     time.Now(),
-	}, nil
+	}
+
+	// Insert the transfer into the database
+	query = "INSERT INTO transfers (from_account_id, to_account_id, amount, created_at) VALUES ($1, $2, $3, $4) RETURNING id"
+	stdErr = tx.QueryRowx(query, transfer.FromAccountId, transfer.ToAccountId, transfer.Amount, transfer.CreatedAt).Scan(&transfer.Id)
+	if stdErr != nil {
+		return nil, stdErr
+	}
+
+	return &transfer, nil
 }
 
 func NewTransferRepo(configs *configs.Config) *TransferRepositoryDb {
