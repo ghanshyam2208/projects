@@ -6,6 +6,7 @@
     "labstack",
     "Rowx",
     "sslmode",
-    "mapstructure"
+    "mapstructure",
+    "cleandb"
   ]
 }

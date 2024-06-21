@@ -15,6 +15,7 @@ type Account struct {
 
 type IAccountRepository interface {
 	GetAllAccounts(int, int) ([]Account, error)
+	GetAccountById(int64) (*Account, error)
 	CreateAccount(dto.CreateAccountDto) (*Account, error)
 	UpdateAccount(int64, dto.UpdateAccountDto) error
 	DeleteAccount(int64) error

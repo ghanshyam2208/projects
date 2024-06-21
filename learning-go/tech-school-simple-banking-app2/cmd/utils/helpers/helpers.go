@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"path/filepath"
+
 	"github.com/labstack/echo"
 )
 
@@ -26,4 +28,9 @@ func WriteSuccessApiResponse(ctx echo.Context, response SuccessApiResponse) erro
 
 func WriteErrorApiResponse(ctx echo.Context, response ErrorApiResponse) error {
 	return ctx.JSON(response.Code, response)
+}
+
+func GetRootDir() (modRoot string, err error) {
+	modRoot, err = filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir("__FILE__"))), "../../"))
+	return
 }

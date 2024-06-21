@@ -12,6 +12,37 @@ import (
 	"github.com/labstack/echo"
 )
 
+func (r *AccountHandlers) GetAccountById(ctx echo.Context) error {
+	customerId, stdErr := strconv.Atoi(ctx.Param("id"))
+	if stdErr != nil {
+		logger.Error("validation failed " + stdErr.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
+		})
+	}
+	account, stdErr := r.service.GetAccountById(int64(customerId))
+	if stdErr != nil {
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusInternalServerError,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
+		})
+	}
+	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
+		Error: false,
+		Code:  http.StatusOK,
+		Data: map[string]interface{}{
+			"account": account,
+		},
+		Message: "accounts fetched successfully",
+	})
+
+}
+
 func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 	page, stdErr := strconv.Atoi(ctx.QueryParam("page"))
 	if stdErr != nil {
@@ -206,7 +237,7 @@ func handleValidationError(ctx echo.Context, stdErr error) error { // error is s
 		Error:     true,
 		Code:      http.StatusBadRequest,
 		ErrorInfo: stdErr.Error(),
-		ErrorData: validationError(ctx, stdErr),
+		ErrorData: validationError(stdErr),
 	})
 }
 

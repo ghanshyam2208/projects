@@ -1,16 +1,21 @@
 .PHONY: createdb dropdb migrateup migratedown dockerup dockerdown run generatebinary clean runbinary all
 
+DB_NAME = simple-bank
+ifeq ($(ENV), test)
+    DB_NAME = simple-bank-test
+endif
+
 createdb:
-	docker exec -it postgres-container createdb --username=root --owner=root simple-bank
+	docker exec -it postgres-container createdb --username=root --owner=root $(DB_NAME)
 
 dropdb:
-	docker exec -it postgres-container dropdb -U root --if-exists simple-bank --force
+	docker exec -it postgres-container dropdb -U root --if-exists $(DB_NAME) --force
 
 migrateup:
-	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/simple-bank?sslmode=disable" -verbose up
+	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/$(DB_NAME)?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/simple-bank?sslmode=disable" -verbose down
+	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/$(DB_NAME)?sslmode=disable" -verbose down
 
 dockerup:
 	@echo "\n>>>>>>>>>> Initiating docker build"
@@ -18,6 +23,10 @@ dockerup:
 
 dockerdown:
 	docker compose down
+
+test:
+	# go test -v -cover ./...
+	go test -v -cover ./cmd/internals/services/
 
 run:
 	go run $(PWD)/cmd/api
@@ -38,3 +47,5 @@ runbinary:
 build: clean generatebinary
 
 start: clean generatebinary runbinary
+
+cleandb: dropdb createdb migrateup

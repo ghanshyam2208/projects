@@ -3,12 +3,18 @@ package services
 import (
 	"banking_app2/cmd/internals/dto"
 	"banking_app2/cmd/internals/repositories"
-	"fmt"
+	"banking_app2/cmd/utils/configs"
+	"banking_app2/cmd/utils/logger"
 	"os"
+	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 var accountService *AccountService
+var accountRepoDB *repositories.AccountRepositoryDB
+var appConfig *configs.Config
 
 // TestMain is the entry point for testing, used for setup and teardown
 func TestMain(m *testing.M) {
@@ -27,8 +33,19 @@ func TestMain(m *testing.M) {
 
 // setup initializes resources before all tests
 func setup() {
+	rootDir, stdErr := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir("__FILE__"))), "../../../"))
+	if stdErr != nil {
+		logger.Error("could not load root dir " + stdErr.Error())
+	}
+	appConfig, stdErr := configs.LoadConfig(rootDir, "app-test")
+	if stdErr != nil {
+		logger.Error("could not load configs " + stdErr.Error())
+	}
+
 	// Initialize the service with a repository
-	accountService = NewAccountService(repositories.NewAccountsRepo())
+	accountRepoDB = repositories.NewAccountsRepo(appConfig)
+	accountService = NewAccountService(accountRepoDB)
+
 }
 
 // teardown cleans up resources after all tests
@@ -39,7 +56,7 @@ func teardown() {
 // SetupTest initializes resources before each test
 func SetupTest() {
 	// Clean the database or repository before each test
-	// repositories.ClearAllData()
+	accountRepoDB.CleanAccount()
 }
 
 // TeardownTest cleans up resources after each test
@@ -51,16 +68,19 @@ func TestCreateAccount(t *testing.T) {
 	SetupTest()
 	defer TeardownTest()
 
-	args := dto.CreateAccountDto{
+	accountArgs := dto.CreateAccountDto{
 		Owner:    "sample user",
 		Balance:  1000,
 		Currency: "INR",
 	}
 
-	account, err := accountService.CreateAccount(args)
+	account, err := accountService.CreateAccount(accountArgs)
 
-	if err != nil {
-		t.Errorf("Error creating account: %v", err)
-	}
-	fmt.Println(account)
+	require.NoError(t, err)
+	require.NotEmpty(t, account)
+	require.Equal(t, accountArgs.Owner, account.Owner)
+	require.Equal(t, accountArgs.Balance, account.Balance)
+	require.Equal(t, accountArgs.Currency, account.Currency)
+	require.NotZero(t, account.Id)
+	require.NotZero(t, account.CreatedAt)
 }

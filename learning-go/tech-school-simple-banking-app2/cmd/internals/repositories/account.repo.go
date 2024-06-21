@@ -4,6 +4,7 @@ import (
 	"banking_app2/cmd/internals/dto"
 	"banking_app2/cmd/utils/configs"
 	"banking_app2/cmd/utils/logger"
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -28,6 +29,21 @@ func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account,
 		return nil, err
 	}
 	return accounts, nil
+}
+
+func (d *AccountRepositoryDB) GetAccountById(customer_id int64) (*Account, error) {
+	accounts := Account{}
+	query := "SELECT id, owner, balance, currency, created_at FROM accounts WHERE id = $1 "
+	err := d.sqlxClient.Get(&accounts, query, customer_id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			logger.Error("No records found: " + err.Error())
+			return nil, errors.New("no records found ")
+		}
+		logger.Error("Error while getting all accounts: " + err.Error())
+		return nil, err
+	}
+	return &accounts, nil
 }
 
 func (d *AccountRepositoryDB) connectDB() {
@@ -119,6 +135,17 @@ func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.Updat
 func (d *AccountRepositoryDB) DeleteAccount(id int64) error {
 	query := "DELETE FROM accounts WHERE id = $1"
 	_, stdErr := d.sqlxClient.Exec(query, id)
+	if stdErr != nil {
+		logger.Error("Error while deleting account: " + stdErr.Error())
+		return stdErr
+	}
+
+	return nil
+}
+
+func (d *AccountRepositoryDB) CleanAccount() error {
+	query := "DELETE FROM accounts"
+	_, stdErr := d.sqlxClient.Exec(query)
 	if stdErr != nil {
 		logger.Error("Error while deleting account: " + stdErr.Error())
 		return stdErr

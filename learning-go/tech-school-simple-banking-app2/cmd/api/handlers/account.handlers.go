@@ -9,7 +9,6 @@ import (
 	"banking_app2/cmd/internals/services"
 
 	"github.com/go-playground/validator"
-	"github.com/labstack/echo"
 )
 
 type AccountHandlers struct {
@@ -29,12 +28,13 @@ func (s *Server) AttachAccountRouters() {
 
 	// attach accounts routes to this group
 	accountRoutesGroup.GET("", accountHandler.GetAllAccounts)
+	accountRoutesGroup.GET("/:id", accountHandler.GetAccountById)
 	accountRoutesGroup.POST("", accountHandler.CreateAccount)
 	accountRoutesGroup.PATCH("", accountHandler.UpdateAccountHandler)
 	accountRoutesGroup.DELETE("", accountHandler.DeleteAccount)
 }
 
-func validationError(c echo.Context, err error) map[string]interface{} {
+func validationError(err error) map[string]interface{} {
 	log.Println("validation error")
 	validationErrors := err.(validator.ValidationErrors)
 

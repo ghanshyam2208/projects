@@ -9,10 +9,10 @@ type Config struct {
 	ServerAdd       string `mapstructure:"ServerAdd"`
 }
 
-func LoadConfig(path string) (*Config, error) {
+func LoadConfig(path string, filename string) (*Config, error) {
 	var config Config
 	viper.AddConfigPath(path)
-	viper.SetConfigName("app")
+	viper.SetConfigName(filename)
 
 	viper.SetConfigType("env")
 

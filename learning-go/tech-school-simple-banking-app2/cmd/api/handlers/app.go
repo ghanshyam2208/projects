@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"banking_app2/cmd/utils/configs"
-	"banking_app2/cmd/utils/errs"
 	"banking_app2/cmd/utils/logger"
+	"fmt"
 	"os"
 	"strings"
 
@@ -24,7 +24,9 @@ func Start() {
 		logger.Error("could not load root dir " + stdErr.Error())
 	}
 
-	config, stdErr := configs.LoadConfig(rootDir)
+	fmt.Println(rootDir)
+
+	config, stdErr := configs.LoadConfig(rootDir, "app")
 
 	if stdErr != nil {
 		logger.Error("could not load configs " + stdErr.Error())
@@ -40,7 +42,6 @@ func Start() {
 	logger.Info("Starting the server at " + srv.appConfigs.ServerAdd)
 	if err := srv.Router.Start(srv.appConfigs.ServerAdd); err != nil {
 		logger.Error("Could not start the server " + err.Error())
-		errs.NewInternalServerError(err.Error())
 		panic(err)
 	}
 }

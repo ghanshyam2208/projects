@@ -7,6 +7,7 @@ import (
 
 type IAccountService interface {
 	GetAllAccounts(int, int) ([]dto.AccountDto, error)
+	GetAccountById(int64) (dto.AccountDto, error)
 	CreateAccount(dto.CreateAccountDto) (dto.AccountDto, error)
 	UpdateAccount(dto.UpdateAccountDto) error
 	DeleteAccount(int64) error
@@ -27,6 +28,15 @@ func (cs AccountService) GetAllAccounts(page int, pageSize int) ([]dto.AccountDt
 	}
 
 	return response, nil
+}
+
+func (cs AccountService) GetAccountById(customer_id int64) (dto.AccountDto, error) {
+	repoAccount, err := cs.repo.GetAccountById(customer_id)
+	if err != nil {
+		return dto.AccountDto{}, err
+	}
+
+	return repoAccount.CreateAccountResponse(), nil
 }
 
 func (cs AccountService) CreateAccount(createAccountDto dto.CreateAccountDto) (dto.AccountDto, error) {
