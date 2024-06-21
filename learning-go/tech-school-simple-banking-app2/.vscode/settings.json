@@ -7,6 +7,9 @@
     "Rowx",
     "sslmode",
     "mapstructure",
-    "cleandb"
+    "cleandb",
+    "randomedata",
+    "qwertyuiopasdfghjklzxcvbnm",
+    "stretchr"
   ]
 }

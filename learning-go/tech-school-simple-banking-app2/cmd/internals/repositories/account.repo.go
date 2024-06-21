@@ -143,7 +143,7 @@ func (d *AccountRepositoryDB) DeleteAccount(id int64) error {
 	return nil
 }
 
-func (d *AccountRepositoryDB) CleanAccount() error {
+func (d *AccountRepositoryDB) CleanAccounts() error {
 	query := "DELETE FROM accounts"
 	_, stdErr := d.sqlxClient.Exec(query)
 	if stdErr != nil {
