@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"banking_app2/cmd/internals/repositories"
+	"banking_app2/cmd/internals/services"
+
 	"github.com/go-playground/validator"
 )
 
 type TransferHandlers struct {
-	// service   services.IAccountService
+	service   *services.DefaultTransferService
 	validator *validator.Validate
 }
 
@@ -14,7 +17,7 @@ func (s *Server) TransferRouters() {
 	transferRoutesGroup := s.Router.Group("/transfer")
 
 	// initiate handler
-	transferHandlers := &TransferHandlers{}
+	transferHandlers := &TransferHandlers{service: services.NewDefaultTransferService(repositories.NewTransferRepo(s.appConfigs))}
 
 	// initiate validator
 	transferHandlers.validator = validator.New()
