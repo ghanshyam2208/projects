@@ -23,7 +23,7 @@ func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account,
 	err := d.sqlxClient.Select(&accounts, query, pageSize, offset)
 	if err != nil {
 		logger.Error("Error while getting all accounts: " + err.Error())
-		return nil, errors.New("error while getting all accounts: ")
+		return nil, err
 	}
 	return accounts, nil
 }
@@ -59,7 +59,7 @@ func (d *AccountRepositoryDB) CreateAccount(createAccountDto dto.CreateAccountDt
 
 	if err != nil {
 		logger.Error("Error while creating account: " + err.Error())
-		return nil, errors.New("error while creating account: ")
+		return nil, err
 	}
 
 	return &account, nil
@@ -106,7 +106,7 @@ func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.Updat
 	_, stdErr := d.sqlxClient.Exec(queryString, args...)
 	if stdErr != nil {
 		logger.Error("Error while updating account: " + stdErr.Error())
-		return errors.New("error while updating account: ")
+		return stdErr
 	}
 
 	return nil
@@ -117,7 +117,7 @@ func (d *AccountRepositoryDB) DeleteAccount(id int64) error {
 	_, stdErr := d.sqlxClient.Exec(query, id)
 	if stdErr != nil {
 		logger.Error("Error while deleting account: " + stdErr.Error())
-		return errors.New("error while deleting account: ")
+		return stdErr
 	}
 
 	return nil
