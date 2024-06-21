@@ -6,14 +6,14 @@ import (
 )
 
 type ITransferService interface {
-	TransferAmount(dto.CreateAccountDto) (repositories.Transfer, error)
+	TransferAmount(dto.CreateAccountDto) (*repositories.Transfer, error)
 }
 
 type DefaultTransferService struct {
 	repo repositories.ITransferRepo
 }
 
-func (d DefaultTransferService) TransferAmount(payload dto.TransferAmountDto) (repositories.Transfer, error) {
+func (d DefaultTransferService) TransferAmount(payload dto.TransferAmountDto) (*repositories.Transfer, error) {
 	return d.repo.TransferAmount(payload)
 }
 

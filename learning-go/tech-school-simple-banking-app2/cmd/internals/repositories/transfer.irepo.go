@@ -14,5 +14,5 @@ type Transfer struct {
 }
 
 type ITransferRepo interface {
-	TransferAmount(dto.TransferAmountDto) (Transfer, error)
+	TransferAmount(dto.TransferAmountDto) (*Transfer, error)
 }
