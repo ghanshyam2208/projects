@@ -1,3 +1,5 @@
+.PHONY: createdb dropdb migrateup migratedown dockerup dockerdown run generatebinary clean runbinary all
+
 createdb:
 	docker exec -it postgres-container createdb --username=root --owner=root simple-bank
 
@@ -10,7 +12,27 @@ migrateup:
 migratedown:
 	migrate -path db/migrations -database "postgresql://root:root@localhost:5432/simple-bank?sslmode=disable" -verbose down
 
-start:
-	go run ./cmd/api
+dockerup:
+	@echo "\n>>>>>>>>>> Initiating docker build"
+	docker compose up -d
 
-.PHONY: createdb
+dockerdown:
+	docker compose down
+
+run:
+	go run $(PWD)/cmd/api
+
+generatebinary:
+	@echo "\n>>>>>>>>>> Generating binary"
+	go build -o bankapi $(PWD)/cmd/api
+
+clean:
+	@echo "\n>>>>>>>>>> Deleting existing binary"
+	rm -f $(PWD)/bankapi
+
+runbinary:
+	@echo "\n>>>>>>>>>> Starting the app from binary"
+	$(PWD)/bankapi
+
+# Define a new target to run multiple scripts sequentially
+build: clean generatebinary runbinary
