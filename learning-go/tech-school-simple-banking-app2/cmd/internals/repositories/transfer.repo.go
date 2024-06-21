@@ -5,13 +5,10 @@ import (
 	"banking_app2/cmd/utils/configs"
 	"banking_app2/cmd/utils/logger"
 	"time"
-
-	"github.com/jmoiron/sqlx"
 )
 
 type TransferRepositoryDb struct {
-	sqlxClient *sqlx.DB
-	appConfigs *configs.Config
+	RepositoryDB
 }
 
 func (t *TransferRepositoryDb) TransferAmount(payload dto.TransferAmountDto) (*Transfer, error) {
@@ -76,20 +73,11 @@ func (t *TransferRepositoryDb) TransferAmount(payload dto.TransferAmountDto) (*T
 }
 
 func NewTransferRepo(configs *configs.Config) *TransferRepositoryDb {
-	repo := &TransferRepositoryDb{
-		appConfigs: configs,
+	repo := &TransferRepositoryDb{}
+	repo.appConfigs = configs
+	if err := repo.connectDB(); err != nil {
+		logger.Error("Error connecting to database for accounts repository: " + err.Error())
+		// Handle error as needed, e.g., return nil or panic
 	}
-	repo.connectDB2()
 	return repo
-}
-
-func (t *TransferRepositoryDb) connectDB2() {
-	// connect to database
-	sqlDb, err := sqlx.Connect("postgres", t.appConfigs.PostgresConnStr)
-	if err != nil {
-		logger.Error("Error while connecting to database: " + err.Error())
-		// panic(err) // this will stop the server, as of now lets not stop server if not able to connect to the server
-	}
-	t.sqlxClient = sqlDb
-	logger.Info("Successfully connected to the database")
 }

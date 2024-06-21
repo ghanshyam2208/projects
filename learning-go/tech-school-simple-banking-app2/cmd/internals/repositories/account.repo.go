@@ -10,13 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 type AccountRepositoryDB struct {
-	sqlxClient *sqlx.DB
-	appConfigs *configs.Config
+	RepositoryDB
 }
 
 func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account, error) {
@@ -46,22 +44,24 @@ func (d *AccountRepositoryDB) GetAccountById(customer_id int64) (*Account, error
 	return &accounts, nil
 }
 
-func (d *AccountRepositoryDB) connectDB() {
-	// connect to database
-	sqlDb, err := sqlx.Connect("postgres", d.appConfigs.PostgresConnStr)
-	if err != nil {
-		logger.Error("Error while connecting to database: " + err.Error())
-		// panic(err) // this will stop the server, as of now lets not stop server if not able to connect to the server
-	}
-	d.sqlxClient = sqlDb
-	logger.Info("Successfully connected to the database")
-}
+// func (d *AccountRepositoryDB) connectDB() {
+// 	// connect to database
+// 	sqlDb, err := sqlx.Connect("postgres", d.appConfigs.PostgresConnStr)
+// 	if err != nil {
+// 		logger.Error("Error while connecting to database: " + err.Error())
+// 		// panic(err) // this will stop the server, as of now lets not stop server if not able to connect to the server
+// 	}
+// 	d.sqlxClient = sqlDb
+// 	logger.Info("Successfully connected to the database")
+// }
 
 func NewAccountsRepo(configs *configs.Config) *AccountRepositoryDB {
-	repo := &AccountRepositoryDB{
-		appConfigs: configs,
+	repo := &AccountRepositoryDB{}
+	repo.appConfigs = configs
+	if err := repo.connectDB(); err != nil {
+		logger.Error("Error connecting to database for accounts repository: " + err.Error())
+		// Handle error as needed, e.g., return nil or panic
 	}
-	repo.connectDB()
 	return repo
 }
 
