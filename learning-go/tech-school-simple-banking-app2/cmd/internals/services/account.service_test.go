@@ -19,37 +19,46 @@ var accountRepoDB *repositories.AccountRepositoryDB
 // TestMain is the entry point for testing, used for setup and teardown
 func TestMain(m *testing.M) {
 	// Setup before all tests
-	setup()
+	if err := setup(); err != nil {
+		logger.Error("setup failed: " + err.Error())
+		os.Exit(1)
+	}
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown after all tests
-	teardown()
+	if err := teardown(); err != nil {
+		logger.Error("teardown failed: " + err.Error())
+		os.Exit(1)
+	}
 
 	// Exit with the proper code
 	os.Exit(code)
 }
 
 // setup initializes resources before all tests
-func setup() {
+func setup() error {
 	rootDir, stdErr := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir("__FILE__"))), "../../../"))
 	if stdErr != nil {
 		logger.Error("could not load root dir " + stdErr.Error())
+		return stdErr
 	}
 	appConfig, stdErr := configs.LoadConfig(rootDir, "app-test")
 	if stdErr != nil {
 		logger.Error("could not load configs " + stdErr.Error())
+		return stdErr
 	}
 
 	// Initialize the service with a repository
 	accountRepoDB = repositories.NewAccountsRepo(appConfig)
 	accountService = NewAccountService(accountRepoDB)
+	return nil
 }
 
 // teardown cleans up resources after all tests
-func teardown() {
-	accountRepoDB.CleanAccounts()
+func teardown() error {
+	return accountRepoDB.CleanAccounts()
 }
 
 // SetupTest initializes resources before each test
