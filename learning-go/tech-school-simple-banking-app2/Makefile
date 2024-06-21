@@ -35,4 +35,6 @@ runbinary:
 	$(PWD)/bankapi
 
 # Define a new target to run multiple scripts sequentially
-build: clean generatebinary runbinary
+build: clean generatebinary
+
+start: clean generatebinary runbinary

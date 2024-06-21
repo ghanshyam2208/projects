@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"banking_app2/cmd/internals/dto"
-	"banking_app2/cmd/utils/errs"
 	"time"
 )
 
@@ -15,10 +14,10 @@ type Account struct {
 }
 
 type IAccountRepository interface {
-	GetAllAccounts(int, int) ([]Account, *errs.AppError)
-	CreateAccount(dto.CreateAccountDto) (*Account, *errs.AppError)
-	UpdateAccount(int64, dto.UpdateAccountDto) *errs.AppError
-	DeleteAccount(int64) *errs.AppError
+	GetAllAccounts(int, int) ([]Account, error)
+	CreateAccount(dto.CreateAccountDto) (*Account, error)
+	UpdateAccount(int64, dto.UpdateAccountDto) error
+	DeleteAccount(int64) error
 }
 
 func (a Account) CreateAccountResponse() dto.AccountDto {

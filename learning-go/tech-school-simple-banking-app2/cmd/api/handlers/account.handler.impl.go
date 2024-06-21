@@ -6,6 +6,7 @@ import (
 	h "banking_app2/cmd/utils/helpers"
 	"banking_app2/cmd/utils/logger"
 	"net/http"
+	"runtime"
 	"strconv"
 
 	"github.com/labstack/echo"
@@ -19,6 +20,7 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 			Error:     true,
 			Code:      http.StatusBadRequest,
 			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 	pageSize, stdErr := strconv.Atoi(ctx.QueryParam("pageSize"))
@@ -28,6 +30,7 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 			Error:     true,
 			Code:      http.StatusBadRequest,
 			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 	if page < 1 || pageSize != 10 {
@@ -36,15 +39,17 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 			Error:     true,
 			Code:      http.StatusBadRequest,
 			ErrorInfo: "page must 1 or pageSize must be 10",
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
-	accounts, err := r.service.GetAllAccounts(page, pageSize)
-	if err != nil {
+	accounts, stdErr := r.service.GetAllAccounts(page, pageSize)
+	if stdErr != nil {
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
-			Code:      err.Code,
-			ErrorInfo: err.AsMessage().Message,
+			Code:      http.StatusInternalServerError,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
@@ -70,31 +75,33 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 
 func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 	var createAccountRequest dto.CreateAccountDto
-	err := ctx.Bind(&createAccountRequest)
+	stdErr := ctx.Bind(&createAccountRequest)
 
-	if err != nil {
-		logger.Error("binding request failed " + err.Error())
+	if stdErr != nil {
+		logger.Error("binding request failed " + stdErr.Error())
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      http.StatusBadRequest,
-			ErrorInfo: err.Error(),
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
 	// Validate the request struct
-	err = r.validator.Struct(&createAccountRequest)
-	if err != nil {
-		return handleValidationError(ctx, err)
+	stdErr = r.validator.Struct(&createAccountRequest)
+	if stdErr != nil {
+		return handleValidationError(ctx, stdErr)
 	}
 
 	// call service
-	account, customErr := r.service.CreateAccount(createAccountRequest)
-	if customErr != nil {
-		logger.Error(customErr.Message)
+	account, stdErr := r.service.CreateAccount(createAccountRequest)
+	if stdErr != nil {
+		logger.Error(stdErr.Error())
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      http.StatusInternalServerError,
-			ErrorInfo: customErr.AsMessage().Message,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
@@ -111,31 +118,33 @@ func (r *AccountHandlers) CreateAccount(ctx echo.Context) error {
 
 func (r *AccountHandlers) UpdateAccountHandler(ctx echo.Context) error {
 	var updateAccountRequest dto.UpdateAccountDto
-	err := ctx.Bind(&updateAccountRequest)
+	stdErr := ctx.Bind(&updateAccountRequest)
 
-	if err != nil {
-		logger.Error("binding request failed " + err.Error())
+	if stdErr != nil {
+		logger.Error("binding request failed " + stdErr.Error())
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      http.StatusBadRequest,
-			ErrorInfo: err.Error(),
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
 	// Validate the request struct
-	err = r.validator.Struct(&updateAccountRequest)
+	stdErr = r.validator.Struct(&updateAccountRequest)
 
-	if err != nil {
-		return handleValidationError(ctx, err)
+	if stdErr != nil {
+		return handleValidationError(ctx, stdErr)
 	}
 
-	customErr := r.service.UpdateAccount(updateAccountRequest)
-	if customErr != nil {
-		logger.Error(customErr.Message)
+	stdErr = r.service.UpdateAccount(updateAccountRequest)
+	if stdErr != nil {
+		logger.Error(stdErr.Error())
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      http.StatusInternalServerError,
-			ErrorInfo: customErr.AsMessage().Message,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
@@ -161,6 +170,7 @@ func (r *AccountHandlers) DeleteAccount(ctx echo.Context) error {
 			Error:     true,
 			Code:      http.StatusBadRequest,
 			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
@@ -169,13 +179,14 @@ func (r *AccountHandlers) DeleteAccount(ctx echo.Context) error {
 	if stdErr != nil {
 		return handleValidationError(ctx, stdErr)
 	}
-	customErr := r.service.DeleteAccount(deleteAccountDto.Id)
-	if customErr != nil {
-		logger.Error(customErr.Message)
+	stdErr = r.service.DeleteAccount(deleteAccountDto.Id)
+	if stdErr != nil {
+		logger.Error(stdErr.Error())
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      http.StatusInternalServerError,
-			ErrorInfo: customErr.AsMessage().Message,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
 		})
 	}
 
@@ -197,4 +208,14 @@ func handleValidationError(ctx echo.Context, stdErr error) error { // error is s
 		ErrorInfo: stdErr.Error(),
 		ErrorData: validationError(ctx, stdErr),
 	})
+}
+
+// ErrorToMap formats the error information as a map[string]interface{}.
+func ErrorToMap(err error) map[string]interface{} {
+	stackBuf := make([]byte, 1024)
+	n := runtime.Stack(stackBuf, false)
+	return map[string]interface{}{
+		"message":    err.Error(),
+		"stackTrace": string(stackBuf[:n]),
+	}
 }

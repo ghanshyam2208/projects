@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"banking_app2/cmd/internals/dto"
-	"banking_app2/cmd/utils/errs"
 	"banking_app2/cmd/utils/logger"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -16,14 +16,14 @@ type AccountRepositoryDB struct {
 	sqlxClient *sqlx.DB
 }
 
-func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account, *errs.AppError) {
+func (d *AccountRepositoryDB) GetAllAccounts(page int, pageSize int) ([]Account, error) {
 	accounts := []Account{}
 	offset := (page - 1) * pageSize
 	query := "SELECT id, owner, balance, currency, created_at FROM accounts ORDER BY id LIMIT $1 OFFSET $2"
 	err := d.sqlxClient.Select(&accounts, query, pageSize, offset)
 	if err != nil {
 		logger.Error("Error while getting all accounts: " + err.Error())
-		return nil, errs.NewInternalServerError("Error while getting all accounts: " + err.Error())
+		return nil, errors.New("error while getting all accounts: ")
 	}
 	return accounts, nil
 }
@@ -45,7 +45,7 @@ func NewAccountsRepo() *AccountRepositoryDB {
 	return repo
 }
 
-func (d *AccountRepositoryDB) CreateAccount(createAccountDto dto.CreateAccountDto) (*Account, *errs.AppError) {
+func (d *AccountRepositoryDB) CreateAccount(createAccountDto dto.CreateAccountDto) (*Account, error) {
 	account := Account{
 		Owner:     createAccountDto.Owner,
 		Balance:   createAccountDto.Balance,
@@ -59,13 +59,13 @@ func (d *AccountRepositoryDB) CreateAccount(createAccountDto dto.CreateAccountDt
 
 	if err != nil {
 		logger.Error("Error while creating account: " + err.Error())
-		return nil, errs.NewInternalServerError("Error while creating account: " + err.Error())
+		return nil, errors.New("error while creating account: ")
 	}
 
 	return &account, nil
 }
 
-func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.UpdateAccountDto) *errs.AppError {
+func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.UpdateAccountDto) error {
 	var query strings.Builder
 	var args []interface{}
 
@@ -89,7 +89,8 @@ func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.Updat
 
 	// Join the set clauses with commas
 	if len(setClauses) == 0 {
-		return errs.NewInternalServerError("No fields to update")
+		logger.Error("No fields to update")
+		return errors.New("no fields to update")
 	}
 
 	query.WriteString(strings.Join(setClauses, ", "))
@@ -105,18 +106,18 @@ func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.Updat
 	_, stdErr := d.sqlxClient.Exec(queryString, args...)
 	if stdErr != nil {
 		logger.Error("Error while updating account: " + stdErr.Error())
-		return errs.NewInternalServerError("Error while updating account: " + stdErr.Error())
+		return errors.New("error while updating account: ")
 	}
 
 	return nil
 }
 
-func (d *AccountRepositoryDB) DeleteAccount(id int64) *errs.AppError {
+func (d *AccountRepositoryDB) DeleteAccount(id int64) error {
 	query := "DELETE FROM accounts WHERE id = $1"
 	_, stdErr := d.sqlxClient.Exec(query, id)
 	if stdErr != nil {
 		logger.Error("Error while deleting account: " + stdErr.Error())
-		return errs.NewInternalServerError("Error while deleting account: " + stdErr.Error())
+		return errors.New("error while deleting account: ")
 	}
 
 	return nil
