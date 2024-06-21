@@ -38,6 +38,7 @@ func Start() {
 
 	srv.Router.Use(removeTrailingSlash) // TODO: this is not working needs debugging
 	srv.AttachAccountRouters()
+	srv.TransferRouters()
 
 	logger.Info("Starting the server at " + srv.appConfigs.ServerAdd)
 	if err := srv.Router.Start(srv.appConfigs.ServerAdd); err != nil {

@@ -40,7 +40,6 @@ func (r *AccountHandlers) GetAccountById(ctx echo.Context) error {
 		},
 		Message: "accounts fetched successfully",
 	})
-
 }
 
 func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
@@ -70,7 +69,7 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 			Error:     true,
 			Code:      http.StatusBadRequest,
 			ErrorInfo: "page must 1 or pageSize must be 10",
-			ErrorData: ErrorToMap(stdErr),
+			ErrorData: ErrorToMap(stdErr), // TODO: issue at error, need to solve using debugging
 		})
 	}
 
