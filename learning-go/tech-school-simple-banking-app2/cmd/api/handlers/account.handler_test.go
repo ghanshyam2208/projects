@@ -14,19 +14,38 @@ import (
 	mock_services "banking_app2/mock"
 )
 
-func TestAccountHandlers_GetAllAccounts(t *testing.T) {
-	// Mock setup
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+var (
+	ctrl        *gomock.Controller
+	mockService *mock_services.MockIAccountService
+	handler     AccountHandlers
+)
 
-	mockService := mock_services.NewMockIAccountService(ctrl)
-	handler := AccountHandlers{service: mockService}
+func setup(t *testing.T) {
+	ctrl = gomock.NewController(t)
+	mockService = mock_services.NewMockIAccountService(ctrl)
+	handler = AccountHandlers{service: mockService}
+}
+
+func teardown() {
+	ctrl.Finish()
+}
+
+func SetupTest(t *testing.T) {
+	setup(t)
+}
+
+func TeardownTest(t *testing.T) {
+	teardown()
+}
+
+func TestAccountHandlers_GetAllAccounts(t *testing.T) {
+	SetupTest(t)
+	defer TeardownTest(t)
 
 	// Expected data from mock service
 	expectedAccounts := []dto.AccountDto{
 		{Id: 1, Owner: "John"},
 		{Id: 2, Owner: "Jane"},
-		// Add more as needed
 	}
 
 	// Set up expectations on the mock service
@@ -49,8 +68,7 @@ func TestAccountHandlers_GetAllAccounts(t *testing.T) {
 
 	// Decode response body
 	var response map[string]interface{}
-	err = json.NewDecoder(rec.Body).Decode(&response)
-	if err != nil {
+	if err := json.NewDecoder(rec.Body).Decode(&response); err != nil {
 		t.Fatalf("error decoding response body: %v", err)
 	}
 
@@ -59,6 +77,7 @@ func TestAccountHandlers_GetAllAccounts(t *testing.T) {
 	if !ok {
 		t.Fatalf("unexpected type for Data field: %T", response["Data"])
 	}
+
 	accounts, ok := data["accounts"].([]interface{})
 	assert.True(t, ok, "accounts should be a []interface{}")
 	assert.Equal(t, len(expectedAccounts), len(accounts), "number of accounts should match")
