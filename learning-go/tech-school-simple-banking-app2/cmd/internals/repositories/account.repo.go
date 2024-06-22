@@ -134,10 +134,21 @@ func (d *AccountRepositoryDB) UpdateAccount(id int64, updateAccountDto dto.Updat
 
 func (d *AccountRepositoryDB) DeleteAccount(id int64) error {
 	query := "DELETE FROM accounts WHERE id = $1"
-	_, stdErr := d.sqlxClient.Exec(query, id)
+	result, stdErr := d.sqlxClient.Exec(query, id)
 	if stdErr != nil {
 		logger.Error("Error while deleting account: " + stdErr.Error())
 		return stdErr
+	}
+
+	rowsAffected, stdErr := result.RowsAffected()
+	if stdErr != nil {
+		logger.Error("Error while checking rows affected: " + stdErr.Error())
+		return stdErr
+	}
+
+	if rowsAffected == 0 {
+		logger.Error("No records found for deletion")
+		return errors.New("no records found")
 	}
 
 	return nil

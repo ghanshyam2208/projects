@@ -115,3 +115,64 @@ func TestGetAccountById(t *testing.T) {
 	require.NotZero(t, account.Id)
 	require.NotZero(t, account.CreatedAt)
 }
+
+func TestGetAccountByIdNotFound(t *testing.T) {
+	SetupTest()
+	defer TeardownTest()
+
+	account, err := accountService.GetAccountById(99999) // Assuming this ID does not exist
+	require.Error(t, err)
+	require.Empty(t, account)
+}
+
+func TestUpdateAccount(t *testing.T) {
+	SetupTest()
+	defer TeardownTest()
+
+	accountArgs := getRandomAcc()
+	createdAcc, err := accountService.CreateAccount(accountArgs)
+	require.NoError(t, err)
+	require.NotEmpty(t, createdAcc)
+
+	updateArgs := dto.UpdateAccountDto{
+		Id:       createdAcc.Id,
+		Owner:    &[]string{"New Owner"}[0],
+		Balance:  &[]int64{2000}[0],
+		Currency: &[]string{"USD"}[0],
+	}
+
+	err = accountService.UpdateAccount(updateArgs)
+	require.NoError(t, err)
+
+	updatedAcc, err := accountService.GetAccountById(createdAcc.Id)
+	require.NoError(t, err)
+	require.NotEmpty(t, updatedAcc)
+	require.Equal(t, "New Owner", updatedAcc.Owner)
+	require.Equal(t, int64(2000), updatedAcc.Balance)
+	require.Equal(t, "USD", updatedAcc.Currency)
+}
+
+func TestDeleteAccount(t *testing.T) {
+	SetupTest()
+	defer TeardownTest()
+
+	accountArgs := getRandomAcc()
+	createdAcc, err := accountService.CreateAccount(accountArgs)
+	require.NoError(t, err)
+	require.NotEmpty(t, createdAcc)
+
+	err = accountService.DeleteAccount(createdAcc.Id)
+	require.NoError(t, err)
+
+	deletedAcc, err := accountService.GetAccountById(createdAcc.Id)
+	require.Error(t, err)
+	require.Empty(t, deletedAcc)
+}
+
+func TestDeleteAccountNotFound(t *testing.T) {
+	SetupTest()
+	defer TeardownTest()
+
+	err := accountService.DeleteAccount(99999) // Assuming this ID does not exist
+	require.Error(t, err)
+}
