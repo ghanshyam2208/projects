@@ -31,6 +31,10 @@ test:
 run:
 	go run $(PWD)/cmd/api
 
+genmock:
+	@echo "\n>>>>>>>>>> Generating mocks"
+	mockgen -source=./cmd/internals/services/account.service.go -destination=./mock/account.service.go IAccountService
+
 generatebinary:
 	@echo "\n>>>>>>>>>> Generating binary"
 	go build -o bankapi $(PWD)/cmd/api

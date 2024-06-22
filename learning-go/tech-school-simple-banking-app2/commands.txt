@@ -13,3 +13,8 @@ migrate create -ext sql -dir db/migrations -seq init_schema
 
 cleaning test db
 >make ENV=test cleandb
+
+
+for mock, .zshrc should have following 
+export GOPATH=/home/mint/go
+export PATH=$PATH:$GOPATH/bin

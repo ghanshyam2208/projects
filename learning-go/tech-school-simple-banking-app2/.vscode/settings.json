@@ -11,6 +11,8 @@
     "randomedata",
     "qwertyuiopasdfghjklzxcvbnm",
     "stretchr",
-    "Beginx"
+    "Beginx",
+    "gomock",
+    "irepo"
   ]
 }
