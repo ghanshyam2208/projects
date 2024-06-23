@@ -12,7 +12,7 @@ type TransferHandlers struct {
 	validator *validator.Validate
 }
 
-func (s *Server) TransferRouters() {
+func (s *Server) AttachTransferRouters() {
 	// Create a group for /transfer
 	transferRoutesGroup := s.Router.Group("/transfer")
 
