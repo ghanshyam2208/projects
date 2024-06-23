@@ -39,6 +39,18 @@ generatebinary:
 	@echo "\n>>>>>>>>>> Generating binary"
 	go build -o bankapi $(PWD)/cmd/api
 
+generatebinaryfordebug:
+	@echo "\n>>>>>>>>>> Generating binary"
+	go build -gcflags="all=-N -l" -o bankapi $(PWD)/cmd/api
+
+dlv:
+	echo "\n>>>>>>>>>> Starting a debugger session"
+	dlv exec ./bankapi --headless --listen=:2345 --api-version=2 --accept-multiclient > /tmp/dlv_logs.txt 2>&1 &
+
+dlvconnect:
+	echo "\n>>>>>>>>>> Connecting to dlv"
+	dlv connect 127.0.0.1:2345
+
 clean:
 	@echo "\n>>>>>>>>>> Deleting existing binary"
 	rm -f $(PWD)/bankapi
@@ -50,6 +62,10 @@ runbinary:
 # Define a new target to run multiple scripts sequentially
 build: clean generatebinary
 
+startdebuggersession: clean generatebinaryfordebug dlv
+
+
 start: clean generatebinary runbinary
 
 cleandb: dropdb createdb migrateup
+

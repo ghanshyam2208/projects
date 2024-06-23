@@ -13,6 +13,10 @@
     "stretchr",
     "Beginx",
     "gomock",
-    "irepo"
+    "irepo",
+    "fkey",
+    "GOPATH",
+    "multiclient",
+    "bankapi"
   ]
 }
