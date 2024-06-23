@@ -3,8 +3,8 @@ package dto
 import "time"
 
 type CreateUserDto struct {
-	Username string `json:"username"  validate:"required"`
-	Password string `json:"password"  validate:"required"`
+	Username string `json:"username"  validate:"required,min=3,max=20"`
+	Password string `json:"password"  validate:"required,min=8,max=20,customPasswordValidationHandler"`
 	FullName string `json:"full_name"  validate:"required"`
 	Email    string `json:"email"  validate:"required"`
 }
