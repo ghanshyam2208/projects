@@ -51,6 +51,10 @@ dlvconnect:
 	echo "\n>>>>>>>>>> Connecting to dlv"
 	dlv connect 127.0.0.1:2345
 
+dlvexit:
+	echo "\n>>>>>>>>>> Exiting the session"
+	echo "exit" > /tmp/dlv_commands.txt && (echo "Y" | dlv connect 127.0.0.1:2345 --init=/tmp/dlv_commands.txt)
+
 clean:
 	@echo "\n>>>>>>>>>> Deleting existing binary"
 	rm -f $(PWD)/bankapi

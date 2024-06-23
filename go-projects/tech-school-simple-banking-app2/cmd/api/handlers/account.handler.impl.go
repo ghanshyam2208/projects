@@ -5,6 +5,7 @@ import (
 	"banking_app2/cmd/internals/repositories"
 	h "banking_app2/cmd/utils/helpers"
 	"banking_app2/cmd/utils/logger"
+	"errors"
 	"net/http"
 	"runtime"
 	"strconv"
@@ -68,8 +69,8 @@ func (r *AccountHandlers) GetAllAccounts(ctx echo.Context) error {
 		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
 			Error:     true,
 			Code:      http.StatusBadRequest,
-			ErrorInfo: "page must 1 or pageSize must be 10",
-			ErrorData: ErrorToMap(stdErr), // TODO: issue at error, need to solve using debugging
+			ErrorInfo: "page must be greater than 1 and page size must be 10",
+			ErrorData: ErrorToMap(errors.New("page must be greater than 1 and page size must be 10")),
 		})
 	}
 
