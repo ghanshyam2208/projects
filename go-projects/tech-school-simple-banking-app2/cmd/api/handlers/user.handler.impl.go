@@ -103,3 +103,46 @@ func (r *UserHandlers) CreateUser(ctx echo.Context) error {
 	})
 
 }
+
+func (r *UserHandlers) Login(ctx echo.Context) error {
+	var loginDto dto.LoginDto
+	stdErr := ctx.Bind(&loginDto)
+
+	if stdErr != nil {
+		logger.Error("binding request failed " + stdErr.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusBadRequest,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
+		})
+	}
+
+	// Validate the request struct
+	stdErr = r.validator.Struct(&loginDto)
+	if stdErr != nil {
+		return handleValidationError(ctx, stdErr)
+	}
+
+	// call service
+	user, stdErr := r.service.Login(loginDto.Username, loginDto.Password)
+	if stdErr != nil {
+		logger.Error(stdErr.Error())
+		return h.WriteErrorApiResponse(ctx, h.ErrorApiResponse{
+			Error:     true,
+			Code:      http.StatusInternalServerError,
+			ErrorInfo: stdErr.Error(),
+			ErrorData: ErrorToMap(stdErr),
+		})
+	}
+
+	return h.WriteSuccessApiResponse(ctx, h.SuccessApiResponse{
+		Error: false,
+		Code:  http.StatusOK,
+		Data: map[string]interface{}{
+			"isLogin": user,
+		},
+		Message: "user created successfully",
+	})
+
+}

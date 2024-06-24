@@ -1,12 +1,12 @@
 package helpers
 
 import (
+	"banking_app2/cmd/utils/logger"
 	"path/filepath"
 
 	"github.com/labstack/echo"
+	"golang.org/x/crypto/bcrypt"
 )
-
-type apiResponse map[string]any
 
 type SuccessApiResponse struct {
 	Error   bool                   `json:"error"`
@@ -33,4 +33,19 @@ func WriteErrorApiResponse(ctx echo.Context, response ErrorApiResponse) error {
 func GetRootDir() (modRoot string, err error) {
 	modRoot, err = filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir("__FILE__"))), "../../"))
 	return
+}
+
+func HashPassword(password string) (string, error) {
+	hashedPassword, stdErr := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if stdErr != nil {
+		logger.Error("failed to hash the password:" + stdErr.Error())
+		return "", stdErr
+	}
+
+	return string(hashedPassword), nil
+}
+
+func ComparePassword(hashedPassword string, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

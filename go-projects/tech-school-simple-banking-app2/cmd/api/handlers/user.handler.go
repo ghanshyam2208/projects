@@ -31,6 +31,7 @@ func (s *Server) AttachUserRouters() {
 	// // attach users routes to this group
 	userRoutesGroup.GET("", userHandlers.GetAllUsers)
 	userRoutesGroup.POST("", userHandlers.CreateUser)
+	userRoutesGroup.POST("/login", userHandlers.Login)
 }
 
 // passwordValidation is a custom validation function to validate password complexity using regex

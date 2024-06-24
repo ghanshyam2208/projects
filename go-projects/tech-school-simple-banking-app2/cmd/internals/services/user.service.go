@@ -9,6 +9,7 @@ type IUserService interface {
 	GetAllUsers(int, int) ([]repositories.User, error)
 	GetUserById(int64) (*repositories.User, error)
 	CreateUser(dto.CreateAccountDto) (*dto.UserResp, error)
+	Login(string, string) bool
 }
 
 type DefaultUserService struct {
@@ -30,6 +31,17 @@ func (s *DefaultUserService) CreateUser(userPayload dto.CreateUserDto) (dto.User
 	}
 
 	return user.CreateUserResponse(), nil
+}
+
+func (s *DefaultUserService) Login(username string, password string) (bool, error) {
+	stdErr := s.repo.CheckPassword(username, password)
+
+	if stdErr != nil {
+		return false, nil
+	}
+
+	return true, nil
+
 }
 
 func NewDefaultUserService(repo repositories.IUserRepo) *DefaultUserService {

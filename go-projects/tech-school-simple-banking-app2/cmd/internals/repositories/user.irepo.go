@@ -19,6 +19,7 @@ type IUserRepo interface {
 	GetAllUsers(int, int) ([]User, error)
 	GetUserById(int64) (*User, error)
 	CreateUser(dto.CreateUserDto) (*User, error)
+	CheckPassword(string, string) error
 }
 
 func (u User) CreateUserResponse() dto.UserResp {

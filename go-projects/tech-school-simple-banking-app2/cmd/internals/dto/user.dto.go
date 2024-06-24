@@ -9,6 +9,11 @@ type CreateUserDto struct {
 	Email    string `json:"email"  validate:"required"`
 }
 
+type LoginDto struct {
+	Username string `json:"username"  validate:"required,min=3,max=20"`
+	Password string `json:"password"  validate:"required,min=8,max=20,customPasswordValidationHandler"`
+}
+
 type UserResp struct {
 	Id        int64     `json:"user_id"`
 	Username  string    `json:"username"`
