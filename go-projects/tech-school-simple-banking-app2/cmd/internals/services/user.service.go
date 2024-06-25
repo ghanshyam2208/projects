@@ -3,6 +3,7 @@ package services
 import (
 	"banking_app2/cmd/internals/dto"
 	"banking_app2/cmd/internals/repositories"
+	"errors"
 )
 
 type IUserService interface {
@@ -37,7 +38,7 @@ func (s *DefaultUserService) Login(username string, password string) (bool, erro
 	stdErr := s.repo.CheckPassword(username, password)
 
 	if stdErr != nil {
-		return false, nil
+		return false, errors.New("wrong username or password")
 	}
 
 	return true, nil

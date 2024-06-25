@@ -140,9 +140,9 @@ func (r *UserHandlers) Login(ctx echo.Context) error {
 		Error: false,
 		Code:  http.StatusOK,
 		Data: map[string]interface{}{
-			"isLogin": user,
+			"login_info": user,
 		},
-		Message: "user created successfully",
+		Message: "login info verified successfully",
 	})
 
 }
